@@ -1,0 +1,51 @@
+{% extends "accounts/base.html" %}
+{% load static %}
+{% block title %}Upload Leads - LeadgenPro{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="form-title">Upload Leads</h2>
+    
+    <div class="upload-guide">
+        <h3>Upload Instructions</h3>
+        <p>Your CSV or Excel file should include these columns (first row as header):</p>
+        <ul>
+            <li><strong>first_name</strong> (required)</li>
+            <li><strong>last_name</strong> (required)</li>
+            <li><strong>email</strong> (required, unique)</li>
+            <li>phone (optional)</li>
+            <li>company (optional)</li>
+            <li>job_title (optional)</li>
+            <li>industry (optional)</li>
+            <li>website (optional)</li>
+            <li>location (optional)</li>
+            <li>source (optional)</li>
+        </ul>
+        <p><a href="{% url 'leads:download_sample' %}" class="btn btn-secondary">Download Sample CSV</a></p>
+    </div>
+    
+    <form method="post" enctype="multipart/form-data" class="form-wrapper">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            {{ form.file.label_tag }}
+            {{ form.file }}
+            {% if form.file.errors %}
+                <ul class="errorlist">
+                    {% for error in form.file.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        
+        <div class="form-group checkbox-group">
+            {{ form.overwrite }}
+            {{ form.overwrite.label_tag }}
+            <small>{{ form.overwrite.help_text }}</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary form-btn">Upload Leads</button>
+    </form>
+</div>
+{% endblock %}

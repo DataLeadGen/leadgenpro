@@ -1,0 +1,101 @@
+{% extends "accounts/base.html" %}
+{% block title %}Leads - LeadgenPro{% endblock %}
+
+{% block content %}
+<div class="leads-container">
+    <div class="leads-header">
+        <h2>Your Leads</h2>
+        <a href="{% url 'leads:upload_leads' %}" class="btn btn-primary">Upload New Leads</a>
+    </div>
+
+    <!-- Filters -->
+    <div class="leads-filters">
+        <form method="get" class="filter-form">
+            <div class="filter-grid">
+                <div class="filter-group">
+                    {{ form.status.label_tag }}
+                    {{ form.status }}
+                </div>
+                <div class="filter-group">
+                    {{ form.company.label_tag }}
+                    {{ form.company }}
+                </div>
+                <div class="filter-group">
+                    {{ form.industry.label_tag }}
+                    {{ form.industry }}
+                </div>
+                <div class="filter-group">
+                    {{ form.search.label_tag }}
+                    {{ form.search }}
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-secondary">Apply Filters</button>
+                    <a href="{% url 'leads:leads_list' %}" class="btn btn-outline">Clear</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Leads Table -->
+    <div class="table-responsive">
+        <table class="leads-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Company</th>
+                    <th>Job Title</th>
+                    <th>Phone</th>
+                    <th>Website</th>
+                    <th> industry </th>
+                    <th>Status</th>
+                    <th>Added On</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lead in leads %}
+                <tr>
+                    <td>{{ lead.first_name }} {{ lead.last_name }}</td>
+                    <td>{{ lead.email }}</td>
+                    <td>{{ lead.company }}</td>
+                    
+                    <td>{{ lead.job_title|default:"-" }}</td>
+                    <td>{{ lead.phone|default:"-" }}</td>
+                    
+                    <td> {{ lead.website }}</td>
+                    
+                    <td> {{ lead.industry }}</td>
+                    <td>
+                        <span class="status-badge status-{{ lead.status|lower }}">
+                            {{ lead.status }}
+                        </span>
+                    </td>
+                    <td>{{ lead.created_at|date:"M d, Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">No leads found. <a href="{% url 'leads:upload_leads' %}">Upload your first leads</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">&laquo; First</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">Previous</a>
+        {% endif %}
+
+        <span class="current-page">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">Last &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
