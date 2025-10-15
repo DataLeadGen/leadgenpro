@@ -1,0 +1,84 @@
+/* ===== LEADS LIST PAGE SPECIFIC STYLES ===== */
+
+.leads-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.leads-header h2 {
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.table-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.leads-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--text-color);
+}
+
+.filter-form input,
+.filter-form select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: border-color 0.2s;
+}
+
+.filter-form input:focus,
+.filter-form select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center; /* Vertically align with form elements */
+    grid-column: -1; /* Aligns to the end of the grid */
+    justify-self: end;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.status-new { background-color: #3498db; } /* Blue */
+.status-contacted { background-color: #f39c12; } /* Orange */
+.status-qualified { background-color: #2ecc71; } /* Green */
+.status-lost { background-color: #e74c3c; } /* Red */

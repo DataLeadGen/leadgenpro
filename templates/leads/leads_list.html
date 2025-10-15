@@ -1,11 +1,25 @@
 {% extends "accounts/base.html" %}
+{% load static %}
+{% load auth_extras %}
+
 {% block title %}Leads - LeadgenPro{% endblock %}
+
+{% block extra_css %}
+    {# Yahan par is page ki specific CSS file link karein #}
+    <link rel="stylesheet" href="{% static 'css/leads_list.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="leads-container">
     <div class="leads-header">
         <h2>Your Leads</h2>
-        <a href="{% url 'leads:upload_leads' %}" class="btn btn-primary">Upload New Leads</a>
+        <div class="header-actions">
+            {# Button sirf superuser ya managers ko dikhega #}
+            {% if user.is_superuser or user|has_group:"Managers" %}
+                <a href="{% url 'leads:upload_leads' %}" class="btn btn-primary">📤 Upload New Leads</a>
+            {% endif %}
+            <a href="{% url 'leads:download_sample_csv' %}" class="btn btn-secondary">📥 Download Sample CSV</a>
+        </div>
     </div>
 
     <!-- Filters -->
@@ -13,41 +27,75 @@
         <form method="get" class="filter-form">
             <div class="filter-grid">
                 <div class="filter-group">
-                    {{ form.status.label_tag }}
+                    <label for="id_status">Status:</label>
                     {{ form.status }}
                 </div>
                 <div class="filter-group">
-                    {{ form.company.label_tag }}
-                    {{ form.company }}
+                    <label for="id_company_name">Company:</label>
+                    {{ form.company_name }}
                 </div>
                 <div class="filter-group">
-                    {{ form.industry.label_tag }}
+                    <label for="id_job_title">Job Title:</label>
+                    {{ form.job_title }}
+                </div>
+                <div class="filter-group">
+                    <label for="id_industry">Industry:</label>
                     {{ form.industry }}
                 </div>
                 <div class="filter-group">
-                    {{ form.search.label_tag }}
+                    <label for="id_person_country">Person Country:</label>
+                    {{ form.person_country }}
+                </div>
+                <div class="filter-group">
+                    <label for="id_company_country">Company Country:</label>
+                    {{ form.company_country }}
+                </div>
+                <div class="filter-group">
+                    <label for="id_employees">Employees:</label>
+                    {{ form.employees }}
+                </div>
+                <div class="filter-group">
+                    <label for="id_revenue">Revenue:</label>
+                    {{ form.revenue }}
+                </div>
+                <div class="filter-group">
+                    <label for="id_search">Search:</label>
                     {{ form.search }}
                 </div>
                 <div class="filter-actions">
-                    <button type="submit" class="btn btn-secondary">Apply Filters</button>
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
                     <a href="{% url 'leads:leads_list' %}" class="btn btn-outline">Clear</a>
                 </div>
             </div>
         </form>
     </div>
 
-    <!-- Leads Table -->
-    <div class="table-responsive">
+    <!-- Table with Permanent Fixed Header -->
+    <div class="table-scroll-wrapper">
         <table class="leads-table">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Company</th>
+                    <th>Full Name</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
                     <th>Job Title</th>
-                    <th>Phone</th>
-                    <th>Website</th>
-                    <th> industry </th>
+                    <th>Professional Email</th>
+                    <th>Email Status</th>
+                    <th>Personal Email</th>
+                    <th>LinkedIn (Person)</th>
+                    <th>Person City</th>
+                    <th>Person State</th>
+                    <th>Person Country</th>
+                    <th>Phone (Person)</th>
+                    <th>Company Name</th>
+                    <th>Company Website</th>
+                    <th>Industry</th>
+                    <th>Employees</th>
+                    <th>Generic Email</th>
+                    <th>Full Address</th>
+                    <th>Company Phone</th>
+                    <th>LinkedIn (Company)</th>
+                    <th>Comments</th>
                     <th>Status</th>
                     <th>Added On</th>
                 </tr>
@@ -55,26 +103,66 @@
             <tbody>
                 {% for lead in leads %}
                 <tr>
-                    <td>{{ lead.first_name }} {{ lead.last_name }}</td>
-                    <td>{{ lead.email }}</td>
-                    <td>{{ lead.company }}</td>
-                    
+                    <td><strong>{{ lead.full_name|default:"-" }}</strong></td>
+                    <td>{{ lead.first_name|default:"-" }}</td>
+                    <td>{{ lead.last_name|default:"-" }}</td>
                     <td>{{ lead.job_title|default:"-" }}</td>
-                    <td>{{ lead.phone|default:"-" }}</td>
-                    
-                    <td> {{ lead.website }}</td>
-                    
-                    <td> {{ lead.industry }}</td>
+                    <td>{{ lead.professional_email|default:"-" }}</td>
+                    <td>{{ lead.email_status|default:"-" }}</td>
+                    <td>{{ lead.personal_email|default:"-" }}</td>
+                    <td>
+                        {% if lead.person_linkedin_url %}
+                            <a href="{{ lead.person_linkedin_url }}" target="_blank" title="LinkedIn Profile">
+                                🔗 Profile
+                            </a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ lead.person_city|default:"-" }}</td>
+                    <td>{{ lead.person_state|default:"-" }}</td>
+                    <td>{{ lead.person_country|default:"-" }}</td>
+                    <td>{{ lead.person_direct_phone|default:"-" }}</td>
+                    <td><strong>{{ lead.company_name|default:"-" }}</strong></td>
+                    <td>
+                        {% if lead.company_website %}
+                            <a href="{{ lead.company_website }}" target="_blank" title="Company Website">
+                                🌐 Website
+                            </a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ lead.industry|default:"-" }}</td>
+                    <td>{{ lead.employees|default:"-" }}</td>
+                    <td>{{ lead.generic_email|default:"-" }}</td>
+                    <td>{{ lead.full_address|default:"-"|truncatewords:5 }}</td>
+                    <td>{{ lead.company_phone|default:"-" }}</td>
+                    <td>
+                        {% if lead.company_linkedin_url %}
+                            <a href="{{ lead.company_linkedin_url }}" target="_blank" title="Company LinkedIn">
+                                🔗 Company
+                            </a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ lead.comments|default:"-"|truncatewords:4 }}</td>
                     <td>
                         <span class="status-badge status-{{ lead.status|lower }}">
-                            {{ lead.status }}
+                            {{ lead.status|default:"New" }}
                         </span>
                     </td>
                     <td>{{ lead.created_at|date:"M d, Y" }}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" class="text-center">No leads found. <a href="{% url 'leads:upload_leads' %}">Upload your first leads</a></td>
+                    <td colspan="23" class="text-center no-leads">
+                        <div>
+                            <p>📝 No leads found</p>
+                            <a href="{% url 'leads:upload_leads' %}" class="btn btn-primary">Upload Your First Leads</a>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -82,20 +170,37 @@
     </div>
 
     <!-- Pagination -->
-    {% if page_obj.has_other_pages %}
-    <div class="pagination">
-        {% if page_obj.has_previous %}
-            <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">&laquo; First</a>
-            <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">Previous</a>
-        {% endif %}
+    <div class="pagination-container">
+        {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">
+                    &laquo; First
+                </a>
+                <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">
+                    Previous
+                </a>
+            {% endif %}
 
-        <span class="current-page">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            <span class="current-page">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
 
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">Next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">Last &raquo;</a>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">
+                    Next
+                </a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">
+                    Last &raquo;
+                </a>
+            {% endif %}
+        </div>
         {% endif %}
     </div>
-    {% endif %}
 </div>
+
+{# Yahan par is page ki specific JavaScript likh sakte hain #}
+{% block extra_js %}
+<script>
+    // Example: console.log("Leads list page loaded!");
+</script>
+{% endblock %}
 {% endblock %}

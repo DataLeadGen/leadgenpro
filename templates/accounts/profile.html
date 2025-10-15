@@ -1,40 +1,21 @@
 {% extends "accounts/base.html" %}
-{% block title %}Profile - LeadgenPro{% endblock %}
+{% load static %}
+
+{% block title %}Your Profile{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="profile-container fade-in">
-  <div class="profile-header">
-    <div class="profile-avatar">
-      {{ user.username|first|upper }}
+<div class="profile-container">
+    <div class="profile-header">
+        <h2>User Profile</h2>
     </div>
-    <h2>{{ user.username }}'s Profile</h2>
-  </div>
-
-  <div class="profile-info">
-    <div class="profile-item">
-      <span class="profile-label">Username</span>
-      <span class="profile-value">{{ user.username }}</span>
+    <div class="profile-details">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Joined:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
     </div>
-
-    <div class="profile-item">
-      <span class="profile-label">Email Address</span>
-      <span class="profile-value">{{ user.email }}</span>
-    </div>
-
-    <div class="profile-item">
-      <span class="profile-label">Member Since</span>
-      <span class="profile-value">{{ user.date_joined|date:"F j, Y" }}</span>
-    </div>
-
-    <div class="profile-item">
-      <span class="profile-label">Account Status</span>
-      <span class="profile-value">
-        {% if user.is_active %}
-          <span style="color: var(--success-color); font-weight: 600;">Active</span>
-        {% else %}
-          <span style="color: var(--error-color); font-weight: 600;">Inactive</span>
-        {% endif %}
-      </span>
-    </div>
-  </div>
 </div>
 {% endblock %}

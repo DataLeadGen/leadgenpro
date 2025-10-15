@@ -1,43 +1,56 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}LeadgenPro{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {# Google Fonts (Optional) #}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div class="navbar">
-      <nav>
-        <a href="/" class="logo">LeadgenPro</a>
-        <div class="nav-links">
-          {% if user.is_authenticated %}
-            <div class="profile-section">
-              <span class="user-greeting">Welcome, {{ user.username }}</span>
-              <a href="{% url 'leads:leads_list' %}">View Your Leads </a>
-              <a href="{% url 'accounts:profile' %}">Profile</a>
-              <a href="{% url 'accounts:logout' %}" class="logout-btn">Logout</a>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    {# Yahan par aapki main/global CSS file aayegi #}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+    {# Yeh block har page par alag CSS file daalne ke liye hai #}
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="navbar">
+        <nav class="container">
+            <a href="{% url 'home' %}" class="logo">🚀 LeadgenPro</a>
+            <div class="nav-links">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'leads:leads_list' %}">Leads</a>
+                    <a href="{% url 'accounts:profile' %}">Profile</a>
+                    <span class="user-greeting">Hi, {{ user.username }}!</span>
+                    <form action="{% url 'accounts:logout' %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-logout">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}">Login</a>
+                    <a href="{% url 'accounts:signup' %}" class="btn btn-primary">Sign Up</a>
+                {% endif %}
             </div>
-          {% else %}
-            <a href="{% url 'accounts:login' %}">Login</a>
-            <a href="{% url 'accounts:signup' %}" class="btn btn-primary">Sign Up</a>
-          {% endif %}
-        </div>
-      </nav>
-    </div>
+        </nav>
+    </header>
 
     {% if messages %}
-      <ul class="messages">
+    <ul class="messages container">
         {% for message in messages %}
-          <li class="{{ message.tags }}">{{ message }}</li>
+        <li class="{{ message.tags }}">{{ message }}</li>
         {% endfor %}
-      </ul>
+    </ul>
     {% endif %}
 
-    {% block content %}{% endblock %}
-  </body>
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    {# Yeh block har page par alag JavaScript daalne ke liye hai #}
+    {% block extra_js %}{% endblock %}
+</body>
 </html>

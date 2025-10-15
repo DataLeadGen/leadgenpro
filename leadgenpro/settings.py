@@ -38,19 +38,44 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    'leads',
+    'leads',    
     'rest_framework',
+    'django.contrib.sites', 
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+]
+    # ... file ke neeche
+SITE_ID = 1
+
+# Allauth settings
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-LOGIN_REDIRECT_URL = 'accounts:profile'
+# Google Provider ke liye configuration
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+LOGIN_REDIRECT_URL = 'leads:leads_list'
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_URL = 'accounts:login'
-
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -84,7 +109,7 @@ WSGI_APPLICATION = 'leadgenpro.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',   # PostgreSQL backend
-        'NAME': 'dlg_db',          # tumhara DB ka naam
+        'NAME': 'postgres',          # tumhara DB ka naam
         'USER': 'postgres',     # DB ka username (default: postgres hota hai)
         'PASSWORD': '1',  # jo password tumne diya hai
         'HOST': 'localhost',    # local server ke liye

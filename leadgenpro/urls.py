@@ -22,8 +22,10 @@ from accounts import views
 urlpatterns = [
     
     path('admin/', admin.site.urls),
-    path('accounts/', include(('accounts.urls','accounts'), namespace='accounts')),
     path('', views.home_view, name='home'),
     path('leads/', include(('leads.urls', 'leads'), namespace='leads')),
+    # Aapke custom URLs ko allauth se pehle rakhein taaki woh pehle match hon.
+    path('accounts/', include(('accounts.urls','accounts'), namespace='accounts')),
+    path('accounts/', include('allauth.urls')),
     
 ]
