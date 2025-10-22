@@ -16,7 +16,7 @@ def signup_view(request):
     if form.is_valid():
       user = form.save() # yaha per database me data save ho jayega... 
       login(request, user)  #user ko login karne ke liye built in login form ko request bhejenege 
-      return redirect('accounts:profile')
+      return redirect('accounts/profile')
     
   else:
     form = CustomUserCreationForm()  # <<< yeh zaroori hain GET request ke liye...

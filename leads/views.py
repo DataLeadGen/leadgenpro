@@ -155,7 +155,7 @@ def upload_leads(request):
 
 @login_required
 def leads_list(request):
-    leads = Lead.objects.filter(created_by=request.user)
+    leads = Lead.objects.all()
     
     # Generate filter choices
     filter_choices = generate_filters(request)

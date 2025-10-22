@@ -35,7 +35,7 @@ class Lead(models.Model):
     company_linkedin_url = models.URLField(blank=True, null=True)
     company_phone = models.CharField(max_length=20, blank=True, null=True)
     comments = models.TextField(blank=True, null=True)
-    revenue = models.CharField(blank=True, null=True)
+    revenue = models.CharField(max_length=100, blank=True, null=True)
     
     # Additional fields
     status = models.CharField(max_length=50, default='New', 

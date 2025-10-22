@@ -108,15 +108,14 @@ WSGI_APPLICATION = 'leadgenpro.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',   # PostgreSQL backend
-        'NAME': 'postgres',          # tumhara DB ka naam
-        'USER': 'postgres',     # DB ka username (default: postgres hota hai)
-        'PASSWORD': '1',  # jo password tumne diya hai
-        'HOST': 'localhost',    # local server ke liye
-        'PORT': '5432',         # PostgreSQL ka default port
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dataleadgen',
+        'USER': 'postgres',  # or the PostgreSQL username you set up
+        'PASSWORD': 'Datalead@2025',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
