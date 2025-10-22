@@ -11,8 +11,11 @@ from .models import Lead
 from .forms import LeadFilterForm, LeadsUploadForm
 from accounts import models
 from generate_lead_filters import generate_filters
-
 import csv
+
+# --- NAYE IMPORTS ---
+# Apne naye utils.py file se functions ko import karein
+from .utils import EMPLOYEE_RANGES, check_range_overlap 
 
 
 @login_required
@@ -155,26 +158,30 @@ def upload_leads(request):
 
 @login_required
 def leads_list(request):
-    leads = Lead.objects.all()
+    # --- BADLAV YAHAN HAI ---
+    leads = Lead.objects.all() # Sabhi leads dikhao
     
-    # Generate filter choices
+    # 1. Datalist ke liye dynamic choices (Industry, Country)
     filter_choices = generate_filters(request)
     
-    # Apply filters
-    form = LeadFilterForm(request.GET, **filter_choices)
+    # 2. Employee dropdown ke liye static choices (utils.py se)
+    employee_range_choices = EMPLOYEE_RANGES 
+    
+    # 3. Form ko employee choices ke saath initialize karein
+    form = LeadFilterForm(request.GET, EMPLOYEES_CHOICES=employee_range_choices)
+    
     if form.is_valid():
-        status = form.cleaned_data.get('status')
+        # --- status yahan se hata diya gaya hai ---
         company = form.cleaned_data.get('company_name')
         job_title = form.cleaned_data.get('job_title')
         industry = form.cleaned_data.get('industry')
         search = form.cleaned_data.get('search')
         person_country = form.cleaned_data.get('person_country')
         company_country = form.cleaned_data.get('company_country')
-        employees = form.cleaned_data.get('employees')
+        employees = form.cleaned_data.get('employees') # Yeh '51-200' jaisi range hogi
         revenue = form.cleaned_data.get('revenue')
         
-        if status:
-            leads = leads.filter(status=status)
+        # --- Standard DB Filters (status filter hata diya gaya hai) ---
         if company:
             leads = leads.filter(company_name__icontains=company)
         if job_title:
@@ -185,8 +192,6 @@ def leads_list(request):
             leads = leads.filter(person_country__icontains=person_country)
         if company_country:
             leads = leads.filter(company_country__icontains=company_country)
-        if employees:
-            leads = leads.filter(employees__icontains=employees)
         if revenue:
             leads = leads.filter(revenue__icontains=revenue)
         if search:
@@ -197,16 +202,32 @@ def leads_list(request):
                 Q(personal_email__icontains=search) |
                 Q(company_name__icontains=search)
             )
+            
+    # --- BADLAV YAHAN HAI: Smart Employee Filter ---
+    # Yeh filter baaki sabhi filters ke baad chalega
+    if employees:
+        filtered_leads_list = []
+        for lead in leads: # Sirf un leads par loop jo pehle hi filter ho chuke hain
+            if check_range_overlap(range_str=employees, db_emp_str=lead.employees):
+                filtered_leads_list.append(lead)
+        
+        # Loop ke results se queryset ko filter karein
+        matched_lead_ids = [lead.id for lead in filtered_leads_list]
+        leads = leads.filter(id__in=matched_lead_ids)
+
     
     # Pagination
-    paginator = Paginator(leads, 25)  # Show 25 leads per page
+    paginator = Paginator(leads, 25)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
+    # --- BADLAV YAHAN HAI ---
+    # filter_choices ko template mein bhejein taaki datalist kaam kare
     return render(request, 'leads/leads_list.html', {
         'leads': page_obj,
         'form': form,
-        'page_obj': page_obj
+        'page_obj': page_obj,
+        'filter_choices': filter_choices 
     })
 
 @login_required
@@ -214,15 +235,15 @@ def export_leads(request):
     """
     Exports filtered leads to a CSV file.
     """
-    leads = Lead.objects.filter(created_by=request.user)
+    # --- BADLAV YAHAN HAI ---
+    leads = Lead.objects.all() # Sabhi leads ko export karein
     
-    # Generate filter choices to instantiate the form correctly, although we don't display it
-    filter_choices = generate_filters(request)
-    
-    # Apply the same filters as the list view
-    form = LeadFilterForm(request.GET, **filter_choices)
+    # Wahi logic jo leads_list mein hai
+    employee_range_choices = EMPLOYEE_RANGES
+    form = LeadFilterForm(request.GET, EMPLOYEES_CHOICES=employee_range_choices)
+
     if form.is_valid():
-        status = form.cleaned_data.get('status')
+        # --- status yahan se hata diya gaya hai ---
         company = form.cleaned_data.get('company_name')
         job_title = form.cleaned_data.get('job_title')
         industry = form.cleaned_data.get('industry')
@@ -232,8 +253,7 @@ def export_leads(request):
         employees = form.cleaned_data.get('employees')
         revenue = form.cleaned_data.get('revenue')
         
-        if status:
-            leads = leads.filter(status=status)
+        # --- Standard DB Filters (status filter hata diya gaya hai) ---
         if company:
             leads = leads.filter(company_name__icontains=company)
         if job_title:
@@ -244,8 +264,6 @@ def export_leads(request):
             leads = leads.filter(person_country__icontains=person_country)
         if company_country:
             leads = leads.filter(company_country__icontains=company_country)
-        if employees:
-            leads = leads.filter(employees__icontains=employees)
         if revenue:
             leads = leads.filter(revenue__icontains=revenue)
         if search:
@@ -256,6 +274,15 @@ def export_leads(request):
                 Q(personal_email__icontains=search) |
                 Q(company_name__icontains=search)
             )
+
+    # --- BADLAV YAHAN HAI: Smart Employee Filter ---
+    if employees:
+        filtered_leads_list = []
+        for lead in leads:
+            if check_range_overlap(range_str=employees, db_emp_str=lead.employees):
+                filtered_leads_list.append(lead)
+        matched_lead_ids = [lead.id for lead in filtered_leads_list]
+        leads = leads.filter(id__in=matched_lead_ids)
 
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="leads.csv"'
@@ -295,4 +322,3 @@ def download_sample_csv(request):
     ])
     
     return response
-                

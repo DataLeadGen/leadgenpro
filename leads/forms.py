@@ -16,33 +16,41 @@ class LeadsUploadForm(forms.Form):
     )
 
 class LeadFilterForm(forms.Form):
-    STATUS_CHOICES = [
-        ('', 'All Statuses'),
-        ('New', 'New'),
-        ('Contacted', 'Contacted'),
-        ('Qualified', 'Qualified'),
-        ('Lost', 'Lost'),
-    ]
-
-    status = forms.ChoiceField(choices=STATUS_CHOICES, required=False)
+    # --- Status filter yahan se hata diya gaya hai ---
+    
+    # Standard text inputs
     company_name = forms.CharField(max_length=200, required=False, label='Company Name')
     job_title = forms.CharField(max_length=200, required=False, label='Job Title')
-    industry = forms.ChoiceField(choices=[], required=False)
     search = forms.CharField(max_length=200, required=False, label='Search')
-    person_country = forms.ChoiceField(choices=[], required=False, label='Person Country')
-    company_country = forms.ChoiceField(choices=[], required=False, label='Company Country')
-    employees = forms.ChoiceField(choices=[], required=False, label='Employees')
     revenue = forms.CharField(required=False, label='Revenue')
 
+    # --- Autocomplete Inputs (CharField + Datalist) ---
+    industry = forms.CharField(
+        required=False, 
+        label='Industry',
+        widget=forms.TextInput(attrs={'list': 'industry-datalist', 'autocomplete': 'off'})
+    )
+    
+    person_country = forms.CharField(
+        required=False, 
+        label='Person Country',
+        widget=forms.TextInput(attrs={'list': 'person-country-datalist', 'autocomplete': 'off'})
+    )
+    
+    company_country = forms.CharField(
+        required=False, 
+        label='Company Country',
+        widget=forms.TextInput(attrs={'list': 'company-country-datalist', 'autocomplete': 'off'})
+    )
+    
+    # --- Employee Range Dropdown (ChoiceField) ---
+    employees = forms.ChoiceField(choices=[], required=False, label='Employees')
+
     def __init__(self, *args, **kwargs):
-        INDUSTRY_CHOICES = kwargs.pop('INDUSTRY_CHOICES', [])
-        PERSON_COUNTRY_CHOICES = kwargs.pop('PERSON_COUNTRY_CHOICES', [])
-        COMPANY_COUNTRY_CHOICES = kwargs.pop('COMPANY_COUNTRY_CHOICES', [])
+        # View se sirf pre-defined employee ranges ko yahan pass kiya jayega
         EMPLOYEES_CHOICES = kwargs.pop('EMPLOYEES_CHOICES', [])
         
         super(LeadFilterForm, self).__init__(*args, **kwargs)
         
-        self.fields['industry'].choices = INDUSTRY_CHOICES
-        self.fields['person_country'].choices = PERSON_COUNTRY_CHOICES
-        self.fields['company_country'].choices = COMPANY_COUNTRY_CHOICES
+        # Sirf employee dropdown ke choices set kiye jayenge
         self.fields['employees'].choices = EMPLOYEES_CHOICES

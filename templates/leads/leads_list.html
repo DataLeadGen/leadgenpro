@@ -22,14 +22,10 @@
         </div>
     </div>
 
-    <!-- Filters -->
     <div class="leads-filters">
         <form method="get" class="filter-form">
             <div class="filter-grid">
-                <div class="filter-group">
-                    <label for="id_status">Status:</label>
-                    {{ form.status }}
-                </div>
+                
                 <div class="filter-group">
                     <label for="id_company_name">Company:</label>
                     {{ form.company_name }}
@@ -38,22 +34,49 @@
                     <label for="id_job_title">Job Title:</label>
                     {{ form.job_title }}
                 </div>
+                
                 <div class="filter-group">
                     <label for="id_industry">Industry:</label>
-                    {{ form.industry }}
+                    {{ form.industry }} {# Yeh ab <input> hai #}
+                    <datalist id="industry-datalist">
+                        {# filter_choices variable jo view se bheja tha #}
+                        {% for value, label in filter_choices.INDUSTRY_CHOICES %}
+                            {% if value %} {# Blank value ko skip karo #}
+                                <option value="{{ label }}"></option>
+                            {% endif %}
+                        {% endfor %}
+                    </datalist>
                 </div>
+
                 <div class="filter-group">
                     <label for="id_person_country">Person Country:</label>
-                    {{ form.person_country }}
+                    {{ form.person_country }} {# Yeh ab <input> hai #}
+                    <datalist id="person-country-datalist">
+                        {% for value, label in filter_choices.PERSON_COUNTRY_CHOICES %}
+                            {% if value %}
+                                <option value="{{ label }}"></option>
+                            {% endif %}
+                        {% endfor %}
+                    </datalist>
                 </div>
+                
                 <div class="filter-group">
                     <label for="id_company_country">Company Country:</label>
-                    {{ form.company_country }}
+                    {{ form.company_country }} {# Yeh ab <input> hai #}
+                    <datalist id="company-country-datalist">
+                        {% for value, label in filter_choices.COMPANY_COUNTRY_CHOICES %}
+                            {% if value %}
+                                <option value="{{ label }}"></option>
+                            {% endif %}
+                        {% endfor %}
+                    </datalist>
                 </div>
+
                 <div class="filter-group">
                     <label for="id_employees">Employees:</label>
-                    {{ form.employees }}
+                    {{ form.employees }} {# Yeh ab range wala <select> hai #}
                 </div>
+                
                 <div class="filter-group">
                     <label for="id_revenue">Revenue:</label>
                     {{ form.revenue }}
@@ -70,7 +93,6 @@
         </form>
     </div>
 
-    <!-- Table with Permanent Fixed Header -->
     <div class="table-scroll-wrapper">
         <table class="leads-table">
             <thead>
@@ -96,8 +118,7 @@
                     <th>Company Phone</th>
                     <th>LinkedIn (Company)</th>
                     <th>Comments</th>
-                    <th>Status</th>
-                    <th>Added On</th>
+                    <th>Status</th> <th>Added On</th>
                 </tr>
             </thead>
             <tbody>
@@ -169,7 +190,6 @@
         </table>
     </div>
 
-    <!-- Pagination -->
     <div class="pagination-container">
         {% if page_obj.has_other_pages %}
         <div class="pagination">
