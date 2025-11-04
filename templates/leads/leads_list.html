@@ -5,27 +5,72 @@
 {% block title %}Leads - LeadgenPro{% endblock %}
 
 {% block extra_css %}
-    {# Yahan par is page ki specific CSS file link karein #}
     <link rel="stylesheet" href="{% static 'css/leads_list.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lead_table.css' %}">
+    
+    {# Interactive features (drawer, bulk actions) CSS #}
+    <link rel="stylesheet" href="{% static 'css/lead_interactive.css' %}">
 {% endblock %}
+
 
 {% block content %}
 <div class="leads-container">
     <div class="leads-header">
         <h2>Your Leads</h2>
         <div class="header-actions">
-            {# Button sirf superuser ya managers ko dikhega #}
+            {# Emojis fixed #}
             {% if user.is_superuser or user|has_group:"Managers" %}
                 <a href="{% url 'leads:upload_leads' %}" class="btn btn-primary">📤 Upload New Leads</a>
             {% endif %}
             <a href="{% url 'leads:download_sample_csv' %}" class="btn btn-secondary">📥 Download Sample CSV</a>
+            
+            <div class="col-toggle-btn" id="col-toggle-btn">
+                Show/Hide Columns 👁️
+                <div class="col-toggle-dropdown" id="col-toggle-dropdown" onclick="event.stopPropagation();">
+                    {# --- "ADDED ON" AUR "LAST UPDATED" KO YAHAN SE HATA DIYA GAYA HAI --- #}
+                    <label><input type="checkbox" data-col="lead_id"> Lead ID</label>
+                    <label><input type="checkbox" data-col="full_name" checked> Full Name</label>
+                    <label><input type="checkbox" data-col="first_name"> First Name</label>
+                    <label><input type="checkbox" data-col="last_name"> Last Name</label>
+                    <label><input type="checkbox" data-col="job_title" checked> Job Title</label>
+                    <label><input type="checkbox" data-col="prof_email" checked> Professional Email</label>
+                    <label><input type="checkbox" data-col="email_status"> Email Status</label>
+                    <label><input type="checkbox" data-col="personal_email"> Personal Email</label>
+                    <label><input type="checkbox" data-col="li_person" checked> LinkedIn (Person)</label>
+                    <label><input type="checkbox" data-col="person_city" checked> Person City</label>
+                    <label><input type="checkbox" data-col="person_state"> Person State</label>
+                    <label><input type="checkbox" data-col="person_country" checked> Person Country</label>
+                    <label><input type="checkbox" data-col="person_phone"> Phone (Person)</label>
+                    
+                    <label><input type="checkbox" data-col="company_id"> Company ID</label>
+                    <label><input type="checkbox" data-col="company_name" checked> Company Name</label>
+                    <label><input type="checkbox" data-col="company_website" checked> Company Website</label>
+                    <label><input type="checkbox" data-col="industry" checked> Industry</label>
+                    <label><input type="checkbox" data-col="employees" checked> Employees</label>
+                    <label><input type="checkbox" data-col="revenue" checked> Revenue</label>
+                    <label><input type="checkbox" data-col="generic_email"> Generic Email</label>
+                    <label><input type="checkbox" data-col="full_address"> Full Address</label>
+                    <label><input type="checkbox" data-col="first_address"> First Address</label>
+                    <label><input type="checkbox" data-col="company_city" checked> Company City</label>
+                    <label><input type="checkbox" data-col="company_state"> Company State</label>
+                    <label><input type="checkbox" data-col="zip_code"> Zip Code</label>
+                    <label><input type="checkbox" data-col="company_country" checked> Company Country</label>
+                    <label><input type="checkbox" data-col="company_phone"> Company Phone</label>
+                    <label><input type="checkbox" data-col="company_linkedin" checked> LinkedIn (Company)</label>
+                    <label><input type="checkbox" data-col="comments"> Comments</label>
+                    
+                    <label><input type="checkbox" data-col="source"> Source</label>
+                    <label><input type="checkbox" data-col="created_by"> Added By</label>
+                    {# REMOVED: <label><input type="checkbox" data-col="added_on" checked> Added On</label> #}
+                    {# REMOVED: <label><input type="checkbox" data-col="updated_at"> Last Updated</label> #}
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="leads-filters">
         <form method="get" class="filter-form">
             <div class="filter-grid">
-                
                 <div class="filter-group">
                     <label for="id_company_name">Company:</label>
                     {{ form.company_name }}
@@ -34,49 +79,31 @@
                     <label for="id_job_title">Job Title:</label>
                     {{ form.job_title }}
                 </div>
-                
                 <div class="filter-group">
                     <label for="id_industry">Industry:</label>
-                    {{ form.industry }} {# Yeh ab <input> hai #}
+                    {{ form.industry }}
                     <datalist id="industry-datalist">
-                        {# filter_choices variable jo view se bheja tha #}
-                        {% for value, label in filter_choices.INDUSTRY_CHOICES %}
-                            {% if value %} {# Blank value ko skip karo #}
-                                <option value="{{ label }}"></option>
-                            {% endif %}
-                        {% endfor %}
+                        {% for value, label in filter_choices.INDUSTRY_CHOICES %}{% if value %}<option value="{{ label }}"></option>{% endif %}{% endfor %}
                     </datalist>
                 </div>
-
                 <div class="filter-group">
                     <label for="id_person_country">Person Country:</label>
-                    {{ form.person_country }} {# Yeh ab <input> hai #}
+                    {{ form.person_country }}
                     <datalist id="person-country-datalist">
-                        {% for value, label in filter_choices.PERSON_COUNTRY_CHOICES %}
-                            {% if value %}
-                                <option value="{{ label }}"></option>
-                            {% endif %}
-                        {% endfor %}
+                        {% for value, label in filter_choices.PERSON_COUNTRY_CHOICES %}{% if value %}<option value="{{ label }}"></option>{% endif %}{% endfor %}
                     </datalist>
                 </div>
-                
                 <div class="filter-group">
                     <label for="id_company_country">Company Country:</label>
-                    {{ form.company_country }} {# Yeh ab <input> hai #}
+                    {{ form.company_country }}
                     <datalist id="company-country-datalist">
-                        {% for value, label in filter_choices.COMPANY_COUNTRY_CHOICES %}
-                            {% if value %}
-                                <option value="{{ label }}"></option>
-                            {% endif %}
-                        {% endfor %}
+                        {% for value, label in filter_choices.COMPANY_COUNTRY_CHOICES %}{% if value %}<option value="{{ label }}"></option>{% endif %}{% endfor %}
                     </datalist>
                 </div>
-
                 <div class="filter-group">
                     <label for="id_employees">Employees:</label>
-                    {{ form.employees }} {# Yeh ab range wala <select> hai #}
+                    {{ form.employees }}
                 </div>
-                
                 <div class="filter-group">
                     <label for="id_revenue">Revenue:</label>
                     {{ form.revenue }}
@@ -93,94 +120,128 @@
         </form>
     </div>
 
+    {# Bulk Action Bar #}
+    <div class="bulk-action-bar" id="bulk-action-bar" style="display: none;">
+        <span class="selected-count">
+            <strong id="selected-count">0</strong> leads selected
+        </span>
+        <div class="actions">
+            <button class="btn btn-secondary" disabled>Add to List</button>
+            <button class="btn btn-secondary" disabled>Email</button>
+            <button class="btn btn-secondary" disabled>Delete Selected</button>
+            <button class="btn btn-primary" id="bulk-export-btn">Export Selected</button>
+        </div>
+    </div>
+
+
     <div class="table-scroll-wrapper">
         <table class="leads-table">
             <thead>
                 <tr>
-                    <th>Full Name</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Job Title</th>
-                    <th>Professional Email</th>
-                    <th>Email Status</th>
-                    <th>Personal Email</th>
-                    <th>LinkedIn (Person)</th>
-                    <th>Person City</th>
-                    <th>Person State</th>
-                    <th>Person Country</th>
-                    <th>Phone (Person)</th>
-                    <th>Company Name</th>
-                    <th>Company Website</th>
-                    <th>Industry</th>
-                    <th>Employees</th>
-                    <th>Generic Email</th>
-                    <th>Full Address</th>
-                    <th>Company Phone</th>
-                    <th>LinkedIn (Company)</th>
-                    <th>Comments</th>
-                    <th>Status</th> <th>Added On</th>
+                    <th class="col-checkbox"><input type="checkbox" id="select-all-leads"></th>
+                    
+                    <th class="col-lead_id">Lead ID</th>
+                    <th class="col-full_name">Full Name</th>
+                    <th class="col-first_name">First Name</th>
+                    <th class="col-last_name">Last Name</th>
+                    <th class="col-job_title">Job Title</th>
+                    <th class="col-prof_email">Professional Email</th>
+                    <th class="col-email_status">Email Status</th>
+                    <th class="col-personal_email">Personal Email</th>
+                    <th class="col-li_person">LinkedIn (Person)</th>
+                    <th class="col-person_city">Person City</th>
+                    <th class="col-person_state">Person State</th>
+                    <th class="col-person_country">Person Country</th>
+                    <th class="col-person_phone">Phone (Person)</th>
+                    
+                    <th class="col-company_id">Company ID</th>
+                    <th class="col-company_name">Company Name</th>
+                    <th class="col-company_website">Company Website</th>
+                    <th class="col-industry">Industry</th>
+                    <th class="col-employees">Employees</th>
+                    <th class="col-revenue">Revenue</th>
+                    <th class="col-generic_email">Generic Email</th>
+                    <th class="col-full_address">Full Address</th>
+                    <th class="col-first_address">First Address</th>
+                    <th class="col-company_city">Company City</th>
+                    <th class="col-company_state">Company State</th>
+                    <th class="col-zip_code">Zip Code</th>
+                    <th class="col-company_country">Company Country</th>
+                    <th class="col-company_phone">Company Phone</th>
+                    <th class="col-company_linkedin">LinkedIn (Company)</th>
+                    <th class="col-comments">Comments</th>
+                    
+                    <th class="col-source">Source</th>
+                    <th class="col-created_by">Added By</th>
+                    {# REMOVED: <th class="col-added_on">Added On</th> #}
+                    {# REMOVED: <th class="col-updated_at">Last Updated</th> #}
                 </tr>
             </thead>
             <tbody>
                 {% for lead in leads %}
                 <tr>
-                    <td><strong>{{ lead.full_name|default:"-" }}</strong></td>
-                    <td>{{ lead.first_name|default:"-" }}</td>
-                    <td>{{ lead.last_name|default:"-" }}</td>
-                    <td>{{ lead.job_title|default:"-" }}</td>
-                    <td>{{ lead.professional_email|default:"-" }}</td>
-                    <td>{{ lead.email_status|default:"-" }}</td>
-                    <td>{{ lead.personal_email|default:"-" }}</td>
-                    <td>
-                        {% if lead.person_linkedin_url %}
-                            <a href="{{ lead.person_linkedin_url }}" target="_blank" title="LinkedIn Profile">
-                                🔗 Profile
+                    <td class="col-checkbox">
+                        <input type="checkbox" class="lead-checkbox" data-lead-id="{{ lead.id }}">
+                    </td>
+                    
+                    <td class="col-lead_id">{{ lead.lead_id|default:"-" }}</td>
+                    <td class="col-full_name">
+                        <strong>
+                            <a href="#" class="quick-view-btn" data-lead-id="{{ lead.id }}" data-url="{% url 'leads:get_lead_detail_json' lead.pk %}">
+                                {{ lead.full_name|default:"-" }}
                             </a>
-                        {% else %}
-                            -
-                        {% endif %}
+                        </strong>
                     </td>
-                    <td>{{ lead.person_city|default:"-" }}</td>
-                    <td>{{ lead.person_state|default:"-" }}</td>
-                    <td>{{ lead.person_country|default:"-" }}</td>
-                    <td>{{ lead.person_direct_phone|default:"-" }}</td>
-                    <td><strong>{{ lead.company_name|default:"-" }}</strong></td>
-                    <td>
-                        {% if lead.company_website %}
-                            <a href="{{ lead.company_website }}" target="_blank" title="Company Website">
-                                🌐 Website
-                            </a>
-                        {% else %}
-                            -
-                        {% endif %}
+                    <td class="col-first_name">{{ lead.first_name|default:"-" }}</td>
+                    <td class="col-last_name">{{ lead.last_name|default:"-" }}</td>
+                    <td class="col-job_title">{{ lead.job_title|default:"-" }}</td>
+                    <td class="col-prof_email">{{ lead.professional_email|default:"-" }}</td>
+                    <td class="col-email_status">{{ lead.email_status|default:"-" }}</td>
+                    <td class="col-personal_email">{{ lead.personal_email|default:"-" }}</td>
+                    <td class="col-li_person">
+                        {# EMOJI FIX #}
+                        {% if lead.person_linkedin_url %}<a href="{{ lead.person_linkedin_url }}" target="_blank" title="LinkedIn Profile">👤 Profile</a>{% else %}-{% endif %}
                     </td>
-                    <td>{{ lead.industry|default:"-" }}</td>
-                    <td>{{ lead.employees|default:"-" }}</td>
-                    <td>{{ lead.generic_email|default:"-" }}</td>
-                    <td>{{ lead.full_address|default:"-"|truncatewords:5 }}</td>
-                    <td>{{ lead.company_phone|default:"-" }}</td>
-                    <td>
-                        {% if lead.company_linkedin_url %}
-                            <a href="{{ lead.company_linkedin_url }}" target="_blank" title="Company LinkedIn">
-                                🔗 Company
-                            </a>
-                        {% else %}
-                            -
-                        {% endif %}
+                    <td class="col-person_city">{{ lead.person_city|default:"-" }}</td>
+                    <td class="col-person_state">{{ lead.person_state|default:"-" }}</td>
+                    <td class="col-person_country">{{ lead.person_country|default:"-" }}</td>
+                    <td class="col-person_phone">{{ lead.person_direct_phone|default:"-" }}</td>
+                    
+                    <td class="col-company_id">{{ lead.company_id|default:"-" }}</td>
+                    <td class="col-company_name"><strong>{{ lead.company_name|default:"-" }}</strong></td>
+                    <td class="col-company_website">
+                        {# EMOJI FIX #}
+                        {% if lead.company_website %}<a href="{{ lead.company_website }}" target="_blank" title="Company Website">🌐 Website</a>{% else %}-{% endif %}
                     </td>
-                    <td>{{ lead.comments|default:"-"|truncatewords:4 }}</td>
-                    <td>
-                        <span class="status-badge status-{{ lead.status|lower }}">
-                            {{ lead.status|default:"New" }}
-                        </span>
+                    <td class="col-industry">{{ lead.industry|default:"-" }}</td>
+                    <td class="col-employees">{{ lead.employees|default:"-" }}</td>
+                    <td class="col-revenue">{{ lead.revenue|default:"-" }}</td>
+                    <td class="col-generic_email">{{ lead.generic_email|default:"-" }}</td>
+                    <td class="col-full_address">{{ lead.full_address|default:"-"|truncatewords:5 }}</td>
+                    <td class="col-first_address">{{ lead.first_address|default:"-"|truncatewords:5 }}</td>
+                    <td class="col-company_city">{{ lead.company_city|default:"-" }}</td>
+                    <td class="col-company_state">{{ lead.company_state|default:"-" }}</td>
+                    <td class="col-zip_code">{{ lead.zip_code|default:"-" }}</td>
+                    <td class="col-company_country">{{ lead.company_country|default:"-" }}</td>
+                    <td class="col-company_phone">{{ lead.company_phone|default:"-" }}</td>
+                    <td class="col-company_linkedin">
+                        {# EMOJI FIX #}
+                        {% if lead.company_linkedin_url %}<a href="{{ lead.company_linkedin_url }}" target="_blank" title="Company LinkedIn">🏢 Company</a>{% else %}-{% endif %}
                     </td>
-                    <td>{{ lead.created_at|date:"M d, Y" }}</td>
+                    <td class="col-comments">{{ lead.comments|default:"-"|truncatewords:4 }}</td>
+                    
+                    <td class="col-source">{{ lead.source|default:"-" }}</td>
+                    <td class="col-created_by">{{ lead.created_by.username|default:"-" }}</td>
+                    {# REMOVED: <td class="col-added_on">{{ lead.created_at|date:"M d, Y" }}</td> #}
+                    {# REMOVED: <td class="col-updated_at">{{ lead.updated_at|date:"M d, Y" }}</td> #}
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="23" class="text-center no-leads">
+                    {# --- COLSPAN UPDATED TO 32 --- #}
+                    <td colspan="32" class="text-center no-leads">
                         <div>
-                            <p>📝 No leads found</p>
+                            {# EMOJI FIX #}
+                            <p>📂 No leads found</p>
                             <a href="{% url 'leads:upload_leads' %}" class="btn btn-primary">Upload Your First Leads</a>
                         </div>
                     </td>
@@ -194,33 +255,37 @@
         {% if page_obj.has_other_pages %}
         <div class="pagination">
             {% if page_obj.has_previous %}
-                <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">
-                    &laquo; First
-                </a>
-                <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">
-                    Previous
-                </a>
+                <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">&laquo; First</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">Previous</a>
             {% endif %}
-
             <span class="current-page">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">
-                    Next
-                </a>
-                <a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">
-                    Last &raquo;
-                </a>
+                <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">Next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">Last &raquo;</a>
             {% endif %}
         </div>
         {% endif %}
     </div>
 </div>
 
-{# Yahan par is page ki specific JavaScript likh sakte hain #}
-{% block extra_js %}
-<script>
-    // Example: console.log("Leads list page loaded!");
-</script>
+
+{# Quick View Drawer HTML #}
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<div class="lead-drawer" id="lead-drawer">
+    <div class="drawer-header">
+        <h3 id="drawer-full-name">Loading...</h3>
+        <button class="close-drawer-btn" id="close-drawer-btn">&times;</button>
+    </div>
+    <div class="drawer-body" id="drawer-content-body">
+        <p>Loading details...</p>
+    </div>
+</div>
+
 {% endblock %}
+
+
+{% block extra_js %}
+    <script src="{% static 'js/lead_table.js' %}" defer></script>
+    
+    <script src="{% static 'js/lead_interactive.js' %}" defer></script>
 {% endblock %}

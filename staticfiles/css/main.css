@@ -1,0 +1,112 @@
+/* ===== GLOBAL STYLES & VARIABLES ===== */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --bg-color: #f8f9fa;
+    --text-color: #212529;
+    --border-color: #dee2e6;
+    --border-radius: 8px;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding-top: 80px; /* Navbar ki height ke liye space */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+}
+
+/* ===== NAVBAR STYLING ===== */
+.navbar {
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.navbar nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+/* ===== COMMON UTILITIES ===== */
+.btn {
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+.btn-logout {
+    background: none;
+    color: var(--secondary-color);
+    padding: 0;
+    font-size: 1rem;
+}
+
+.btn-logout:hover {
+    color: var(--primary-color);
+}
+
+/* ===== MESSAGES/ALERTS ===== */
+.messages {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.messages li {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid transparent;
+}
+
+.messages li.success { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+.messages li.error { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+.messages li.warning { background-color: #fff3cd; border-color: #ffeeba; color: #856404; }

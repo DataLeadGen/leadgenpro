@@ -1,0 +1,140 @@
+/* Styling for the Upload Leads page */
+
+.upload-container {
+    max-width: 800px; /* Limit width for better readability */
+    margin: 2rem auto; /* Center the container */
+    padding: 1rem;
+}
+
+.upload-title {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+}
+
+/* Card style for form and instructions */
+.card {
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.upload-instructions h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #111827;
+}
+
+.upload-instructions p {
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+/* Style for the column list */
+.column-list {
+    columns: 2; /* Display columns in two vertical lists */
+    -webkit-columns: 2;
+    -moz-columns: 2;
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #374151;
+}
+
+.column-list li {
+    margin-bottom: 0.5rem;
+    padding-left: 1.2em; /* Indent list items */
+    position: relative;
+}
+
+.column-list li::before {
+    content: "•"; /* Bullet point */
+    position: absolute;
+    left: 0;
+    color: #9ca3af; /* Light gray bullet */
+}
+
+.sample-download {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+/* Form styling */
+.upload-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.upload-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.upload-form input[type="file"] {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    background-color: #f9fafb;
+}
+.upload-form input[type="file"]:focus {
+     outline: 2px solid transparent;
+     outline-offset: 2px;
+     border-color: #6366f1; /* Indigo border on focus */
+     box-shadow: 0 0 0 2px #a5b4fc; /* Indigo ring on focus */
+}
+
+
+.upload-form .checkbox-group {
+    display: flex;
+    align-items: center;
+}
+
+.upload-form .checkbox-group input[type="checkbox"] {
+    margin-right: 0.5rem;
+    height: 1rem;
+    width: 1rem;
+    border-radius: 0.25rem;
+    border-color: #d1d5db;
+}
+.upload-form .checkbox-group input[type="checkbox"]:focus{
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px #a5b4fc; /* Indigo ring on focus */
+}
+
+.upload-form .checkbox-group label {
+    margin-bottom: 0; /* Align label vertically */
+    font-weight: normal; /* Normal weight for checkbox label */
+    margin-right: 1rem;
+}
+
+.upload-form .form-help-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.upload-form .form-submit-btn {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.errorlist {
+    list-style: none;
+    padding: 0;
+    margin-top: 0.5rem;
+    color: #dc2626; /* Red color for errors */
+    font-size: 0.875rem;
+}

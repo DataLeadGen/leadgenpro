@@ -1,35 +1,64 @@
 {% extends "accounts/base.html" %}
 {% load static %}
+
 {% block title %}Upload Leads - LeadgenPro{% endblock %}
 
+{% block extra_css %}
+    {# Add a new CSS file specifically for this page #}
+    <link rel="stylesheet" href="{% static 'css/upload_leads.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="form-container">
-    <h2 class="form-title">Upload Leads</h2>
-    
-    <div class="upload-guide">
-        <h3>Upload Instructions</h3>
-        <p>Your CSV or Excel file should include these columns (first row as header):</p>
-        <ul>
-            <li><strong>first_name</strong> (required)</li>
-            <li><strong>last_name</strong> (required)</li>
-            <li><strong>email</strong> (required, unique)</li>
-            <li>phone (optional)</li>
-            <li>company (optional)</li>
-            <li>job_title (optional)</li>
-            <li>industry (optional)</li>
-            <li>website (optional)</li>
-            <li>location (optional)</li>
-            <li>source (optional)</li>
+<div class="upload-container">
+    <h2 class="upload-title">Upload New Leads</h2>
+
+    <div class="upload-instructions card">
+        <h3>Instructions & Sample</h3>
+        <p>Your CSV or Excel file should ideally include the following columns (first row as header). **Professional Email** is required.</p>
+        <ul class="column-list">
+            <li>Full Name</li>
+            <li>First Name</li>
+            <li>Last Name</li>
+            <li>Job Title</li>
+            <li>**Professional Email (Required)**</li>
+            <li>Email Status</li>
+            <li>Personal Email</li>
+            <li>Person Linkedin Url</li>
+            <li>Person City</li>
+            <li>Person State</li>
+            <li>Person Country</li>
+            <li>Person Direct Phone Number</li>
+            <li>Company Name</li>
+            <li>Company Website</li>
+            <li>Industry</li>
+            <li>Employees</li>
+            <li>Revenue</li>
+            <li>Company Linkedin Url</li>
+            <li>Company Phone Numbers</li>
+            <li>Comments</li>
+            <li>Lead ID</li>
+            <li>Company ID</li>
+            <li>Generic Email</li>
+            <li>Full Address</li>
+            <li>First Address</li>
+            <li>Company City</li>
+            <li>Company State</li>
+            <li>Zip code</li>
+            <li>Company Country</li>
         </ul>
-        <p><a href="{% url 'leads:download_sample_csv' %}" class="btn btn-secondary">Download Sample CSV</a></p>
+        <p>The system will try to match variations like "Email" or "Website".</p>
+        <div class="sample-download">
+             <a href="{% url 'leads:download_sample_csv' %}" class="btn btn-secondary">📥 Download Sample CSV</a>
+        </div>
     </div>
-    
-    <form method="post" enctype="multipart/form-data" class="form-wrapper">
+
+    <form method="post" enctype="multipart/form-data" class="upload-form card">
         {% csrf_token %}
         
         <div class="form-group">
-            {{ form.file.label_tag }}
+            <label for="{{ form.file.id_for_label }}">Select CSV or Excel File:</label>
             {{ form.file }}
+            <small class="form-help-text">{{ form.file.help_text }}</small>
             {% if form.file.errors %}
                 <ul class="errorlist">
                     {% for error in form.file.errors %}
@@ -41,11 +70,18 @@
         
         <div class="form-group checkbox-group">
             {{ form.overwrite }}
-            {{ form.overwrite.label_tag }}
-            <small>{{ form.overwrite.help_text }}</small>
+            <label for="{{ form.overwrite.id_for_label }}">{{ form.overwrite.label }}</label>
+            <small class="form-help-text">{{ form.overwrite.help_text }}</small>
+             {% if form.overwrite.errors %}
+                <ul class="errorlist">
+                    {% for error in form.overwrite.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </div>
 
-        <button type="submit" class="btn btn-primary form-btn">Upload Leads</button>
+        <button type="submit" class="btn btn-primary form-submit-btn">📤 Upload Leads</button>
     </form>
 </div>
 {% endblock %}
