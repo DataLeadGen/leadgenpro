@@ -12,3 +12,6 @@ python manage.py collectstatic --no-input
 
 # Database migrate karein
 python manage.py migrate
+
+# Admin user banayein
+python setup_admin.py
