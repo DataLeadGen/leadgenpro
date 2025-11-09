@@ -16,41 +16,88 @@ class LeadsUploadForm(forms.Form):
     )
 
 class LeadFilterForm(forms.Form):
-    # --- Status filter yahan se hata diya gaya hai ---
     
-    # Standard text inputs
-    company_name = forms.CharField(max_length=200, required=False, label='Company Name')
-    job_title = forms.CharField(max_length=200, required=False, label='Job Title')
-    search = forms.CharField(max_length=200, required=False, label='Search')
-    revenue = forms.CharField(required=False, label='Revenue')
+    company_name = forms.CharField(
+        max_length=200, 
+        required=False, 
+        label='Company Name(s)',
+        widget=forms.TextInput(attrs={'placeholder': 'e.g., Google, Microsoft'})
+    )
+    
+    revenue = forms.CharField(
+        required=False, 
+        label='Revenue(s)',
+        widget=forms.TextInput(attrs={'placeholder': 'e.g., $1M, $5M-$10M'})
+    )
 
-    # --- Autocomplete Inputs (CharField + Datalist) ---
-    industry = forms.CharField(
+    search = forms.CharField(
+        max_length=200, 
         required=False, 
-        label='Industry',
-        widget=forms.TextInput(attrs={'list': 'industry-datalist', 'autocomplete': 'off'})
+        label='General Search',
+        widget=forms.TextInput(attrs={'placeholder': 'Search name, email, company...'})
+    )
+
+    # --- Multi-select dropdowns ---
+    
+    job_title = forms.MultipleChoiceField(
+        required=False,
+        label='Job Title(s)',
+        widget=forms.SelectMultiple(attrs={'class': 'select2-multi', 'placeholder': 'Search job titles...'})
+    )
+
+    industry = forms.MultipleChoiceField(
+        required=False,
+        label='Industry(ies)',
+        widget=forms.SelectMultiple(attrs={'class': 'select2-multi', 'placeholder': 'Search industries...'})
     )
     
-    person_country = forms.CharField(
-        required=False, 
-        label='Person Country',
-        widget=forms.TextInput(attrs={'list': 'person-country-datalist', 'autocomplete': 'off'})
+    person_country = forms.MultipleChoiceField(
+        required=False,
+        label='Person Country(ies)',
+        widget=forms.SelectMultiple(attrs={'class': 'select2-multi', 'placeholder': 'Search countries...'})
     )
     
-    company_country = forms.CharField(
-        required=False, 
-        label='Company Country',
-        widget=forms.TextInput(attrs={'list': 'company-country-datalist', 'autocomplete': 'off'})
+    company_country = forms.MultipleChoiceField(
+        required=False,
+        label='Company Country(ies)',
+        widget=forms.SelectMultiple(attrs={'class': 'select2-multi', 'placeholder': 'Search countries...'})
     )
     
-    # --- Employee Range Dropdown (ChoiceField) ---
-    employees = forms.ChoiceField(choices=[], required=False, label='Employees')
+    # --- YAHAN BADLAV HUA HAI: Employee filter (Dono) ---
+    
+    employees_dropdown = forms.MultipleChoiceField(
+        required=False, 
+        label='Employees (Select)',
+        widget=forms.SelectMultiple(attrs={'class': 'select2-multi', 'placeholder': 'Select employee ranges...'})
+    )
+    
+    employees_text = forms.CharField(
+        required=False,
+        label='Employees (Custom)',
+        widget=forms.TextInput(attrs={'placeholder': 'e.g., 15 or 30-70'})
+    )
+
 
     def __init__(self, *args, **kwargs):
-        # View se sirf pre-defined employee ranges ko yahan pass kiya jayega
         EMPLOYEES_CHOICES = kwargs.pop('EMPLOYEES_CHOICES', [])
+        JOB_TITLE_CHOICES = kwargs.pop('JOB_TITLE_CHOICES', [])
+        INDUSTRY_CHOICES = kwargs.pop('INDUSTRY_CHOICES', [])
+        PERSON_COUNTRY_CHOICES = kwargs.pop('PERSON_COUNTRY_CHOICES', [])
+        COMPANY_COUNTRY_CHOICES = kwargs.pop('COMPANY_COUNTRY_CHOICES', [])
         
         super(LeadFilterForm, self).__init__(*args, **kwargs)
         
-        # Sirf employee dropdown ke choices set kiye jayenge
-        self.fields['employees'].choices = EMPLOYEES_CHOICES
+        # Choices assign karein
+        self.fields['employees_dropdown'].choices = EMPLOYEES_CHOICES # Badlaav
+        self.fields['job_title'].choices = JOB_TITLE_CHOICES
+        self.fields['industry'].choices = INDUSTRY_CHOICES
+        self.fields['person_country'].choices = PERSON_COUNTRY_CHOICES
+        self.fields['company_country'].choices = COMPANY_COUNTRY_CHOICES
+        
+        # Sabko optional banayein
+        self.fields['job_title'].required = False
+        self.fields['industry'].required = False
+        self.fields['person_country'].required = False
+        self.fields['company_country'].required = False
+        self.fields['employees_dropdown'].required = False # Badlaav
+        self.fields['employees_text'].required = False # Badlaav

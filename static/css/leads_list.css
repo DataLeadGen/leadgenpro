@@ -1,84 +1,228 @@
-/* ===== LEADS LIST PAGE SPECIFIC STYLES ===== */
+/* Styling for the main leads list container */
+.leads-container {
+    width: 100%;
+    margin: 1.5rem auto;
+}
 
+/* Header section with Title and Action Buttons */
 .leads-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
 }
 
 .leads-header h2 {
     margin: 0;
-    color: var(--primary-color);
+    color: #111827; 
 }
 
-.table-scroll-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
+.header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
-.leads-table {
-    width: 100%;
-    border-collapse: collapse;
+
+/* --- Filter Grid Styling (Updated) --- */
+
+.leads-filters {
+    background-color: #f9fafb; 
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 1.5rem;
+    overflow-x: hidden; /* Filter section ka scrollbar forcefully hata dega */
 }
 
 .filter-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px;
-    align-items: flex-end;
+    /* Responsive Grid: Kam se kam 220px, max 1fr */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    /* Spacing/Gap badha di gayi hai */
+    gap: 1.25rem 1rem; /* 1.25rem vertical, 1rem horizontal gap */
+    align-items: flex-end; /* Sabko neeche align karega */
 }
 
 .filter-group {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; 
+    width: 100%;
 }
 
 .filter-group label {
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: var(--text-color);
+    margin-bottom: 0.5rem; 
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
 }
 
-.filter-form input,
-.filter-form select {
+/* --- Common styling for all inputs/selects --- */
+.filter-grid input[type="text"],
+.filter-grid input[type="search"],
+.filter-grid select {
     width: 100%;
-    padding: 8px 12px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    background-color: var(--background-color);
-    color: var(--text-color);
-    transition: border-color 0.2s;
+    height: 42px; /* Fixed height */
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    box-sizing: border-box; 
+    font-size: 0.9rem;
+    line-height: 1.25rem;
 }
 
-.filter-form input:focus,
-.filter-form select:focus {
-    outline: none;
-    border-color: var(--primary-color);
+/* Fix for default select arrow not fitting */
+.filter-grid select {
+    padding-right: 2rem; 
 }
+
 
 .filter-actions {
     display: flex;
-    gap: 10px;
-    align-items: center; /* Vertically align with form elements */
-    grid-column: -1; /* Aligns to the end of the grid */
-    justify-self: end;
+    gap: 0.5rem;
+    width: 100%;
 }
 
-.status-badge {
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.85em;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: #fff;
+.filter-actions .btn {
+    flex-grow: 1; 
+    height: 42px; /* Fixed height */
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 42px; 
+    white-space: nowrap;
 }
 
-.status-new { background-color: #3498db; } /* Blue */
-.status-contacted { background-color: #f39c12; } /* Orange */
-.status-qualified { background-color: #2ecc71; } /* Green */
-.status-lost { background-color: #e74c3c; } /* Red */
+
+/* --- Select2 Styling Consistency --- */
+
+.filter-group .select2-container {
+    width: 100% !important; 
+    box-sizing: border-box;
+}
+
+/* Select2 Single Select (Jaise Employees) */
+.filter-group .select2-container .select2-selection--single {
+    height: 42px !important; 
+    border: 1px solid #d1d5db !important;
+    border-radius: 0.375rem !important;
+    display: flex;
+    align-items: center;
+}
+.filter-group .select2-container .select2-selection--single .select2-selection__rendered {
+    line-height: 40px !important;
+    padding-left: 0.75rem !important;
+    color: #374151;
+}
+.filter-group .select2-container .select2-selection--single .select2-selection__arrow {
+    height: 40px !important;
+}
+
+/* Select2 Multi-Select (Job Title, Industry, etc.) */
+.filter-group .select2-container .select2-selection--multiple {
+    min-height: 42px !important; 
+    max-height: 120px; 
+    overflow-y: auto;
+    border: 1px solid #d1d5db !important;
+    border-radius: 0.375rem !important;
+    padding: 2px 0.5rem !important;
+    box-sizing: border-box;
+}
+
+.filter-group .select2-container .select2-selection--multiple .select2-selection__choice {
+    background-color: #eef2ff;
+    border-color: #c7d2fe;
+    color: #4338ca;
+    padding: 3px 6px;
+    margin-top: 5px !important;
+}
+.filter-group .select2-container .select2-selection__choice__remove {
+    color: #4338ca !important;
+}
+
+/* Focus styles for ALL inputs */
+.filter-grid input:focus,
+.filter-grid select:focus,
+.filter-group .select2-container.select2-container--focus .select2-selection--multiple,
+.filter-group .select2-container.select2-container--focus .select2-selection--single {
+    border-color: #4f46e5 !important;
+    box-shadow: 0 0 0 2px #c7d2fe !important;
+    outline: none;
+}
+/* --- Filter Styling End --- */
+
+
+/* Bulk Action Bar Styling */
+.bulk-action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    background-color: #374151;
+    color: white;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+.bulk-action-bar .selected-count {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.bulk-action-bar .selected-count strong {
+    font-size: 1rem;
+    margin-right: 0.25rem;
+}
+.bulk-action-bar .actions .btn {
+    margin-left: 0.5rem;
+    font-size: 0.875rem;
+    padding: 0.4rem 0.8rem;
+}
+
+
+/* Pagination */
+.pagination-container {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.pagination {
+    display: flex;
+    gap: 0.25rem;
+}
+.pagination .page-link,
+.pagination .current-page {
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    text-decoration: none;
+    color: #374151;
+    font-size: 0.875rem;
+}
+.pagination .page-link:first-child {
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+}
+.pagination .page-link:last-child {
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+.pagination .page-link:hover {
+    background-color: #f9fafb;
+}
+.pagination .current-page {
+    background-color: #eef2ff;
+    color: #4f46e5;
+    font-weight: 600;
+    border-color: #e0e7ff;
+}
+
+/* No Leads Message */
+.no-leads {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6b7280;
+}
+.no-leads p {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+}

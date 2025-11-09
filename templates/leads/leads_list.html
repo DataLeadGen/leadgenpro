@@ -5,10 +5,9 @@
 {% block title %}Leads - LeadgenPro{% endblock %}
 
 {% block extra_css %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/leads_list.css' %}">
     <link rel="stylesheet" href="{% static 'css/lead_table.css' %}">
-    
-    {# Interactive features (drawer, bulk actions) CSS #}
     <link rel="stylesheet" href="{% static 'css/lead_interactive.css' %}">
 {% endblock %}
 
@@ -18,7 +17,6 @@
     <div class="leads-header">
         <h2>Your Leads</h2>
         <div class="header-actions">
-            {# Emojis fixed #}
             {% if user.is_superuser or user|has_group:"Managers" %}
                 <a href="{% url 'leads:upload_leads' %}" class="btn btn-primary">📤 Upload New Leads</a>
             {% endif %}
@@ -27,7 +25,6 @@
             <div class="col-toggle-btn" id="col-toggle-btn">
                 Show/Hide Columns 👁️
                 <div class="col-toggle-dropdown" id="col-toggle-dropdown" onclick="event.stopPropagation();">
-                    {# --- "ADDED ON" AUR "LAST UPDATED" KO YAHAN SE HATA DIYA GAYA HAI --- #}
                     <label><input type="checkbox" data-col="lead_id"> Lead ID</label>
                     <label><input type="checkbox" data-col="full_name" checked> Full Name</label>
                     <label><input type="checkbox" data-col="first_name"> First Name</label>
@@ -41,7 +38,6 @@
                     <label><input type="checkbox" data-col="person_state"> Person State</label>
                     <label><input type="checkbox" data-col="person_country" checked> Person Country</label>
                     <label><input type="checkbox" data-col="person_phone"> Phone (Person)</label>
-                    
                     <label><input type="checkbox" data-col="company_id"> Company ID</label>
                     <label><input type="checkbox" data-col="company_name" checked> Company Name</label>
                     <label><input type="checkbox" data-col="company_website" checked> Company Website</label>
@@ -58,11 +54,8 @@
                     <label><input type="checkbox" data-col="company_phone"> Company Phone</label>
                     <label><input type="checkbox" data-col="company_linkedin" checked> LinkedIn (Company)</label>
                     <label><input type="checkbox" data-col="comments"> Comments</label>
-                    
                     <label><input type="checkbox" data-col="source"> Source</label>
                     <label><input type="checkbox" data-col="created_by"> Added By</label>
-                    {# REMOVED: <label><input type="checkbox" data-col="added_on" checked> Added On</label> #}
-                    {# REMOVED: <label><input type="checkbox" data-col="updated_at"> Last Updated</label> #}
                 </div>
             </div>
         </div>
@@ -71,47 +64,46 @@
     <div class="leads-filters">
         <form method="get" class="filter-form">
             <div class="filter-grid">
+                
                 <div class="filter-group">
-                    <label for="id_company_name">Company:</label>
+                    <label for="id_company_name">{{ form.company_name.label }}:</label>
                     {{ form.company_name }}
                 </div>
                 <div class="filter-group">
-                    <label for="id_job_title">Job Title:</label>
+                    <label for="id_job_title">{{ form.job_title.label }}:</label>
                     {{ form.job_title }}
                 </div>
                 <div class="filter-group">
-                    <label for="id_industry">Industry:</label>
+                    <label for="id_industry">{{ form.industry.label }}:</label>
                     {{ form.industry }}
-                    <datalist id="industry-datalist">
-                        {% for value, label in filter_choices.INDUSTRY_CHOICES %}{% if value %}<option value="{{ label }}"></option>{% endif %}{% endfor %}
-                    </datalist>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="id_employees_dropdown">{{ form.employees_dropdown.label }}:</label>
+                    {{ form.employees_dropdown }}
                 </div>
                 <div class="filter-group">
-                    <label for="id_person_country">Person Country:</label>
+                    <label for="id_employees_text">{{ form.employees_text.label }}:</label>
+                    {{ form.employees_text }}
+                </div>
+
+                <div class="filter-group">
+                    <label for="id_person_country">{{ form.person_country.label }}:</label>
                     {{ form.person_country }}
-                    <datalist id="person-country-datalist">
-                        {% for value, label in filter_choices.PERSON_COUNTRY_CHOICES %}{% if value %}<option value="{{ label }}"></option>{% endif %}{% endfor %}
-                    </datalist>
                 </div>
                 <div class="filter-group">
-                    <label for="id_company_country">Company Country:</label>
+                    <label for="id_company_country">{{ form.company_country.label }}:</label>
                     {{ form.company_country }}
-                    <datalist id="company-country-datalist">
-                        {% for value, label in filter_choices.COMPANY_COUNTRY_CHOICES %}{% if value %}<option value="{{ label }}"></option>{% endif %}{% endfor %}
-                    </datalist>
                 </div>
                 <div class="filter-group">
-                    <label for="id_employees">Employees:</label>
-                    {{ form.employees }}
-                </div>
-                <div class="filter-group">
-                    <label for="id_revenue">Revenue:</label>
+                    <label for="id_revenue">{{ form.revenue.label }}:</label>
                     {{ form.revenue }}
                 </div>
                 <div class="filter-group">
-                    <label for="id_search">Search:</label>
+                    <label for="id_search">{{ form.search.label }}:</label>
                     {{ form.search }}
                 </div>
+
                 <div class="filter-actions">
                     <button type="submit" class="btn btn-primary">Apply Filters</button>
                     <a href="{% url 'leads:leads_list' %}" class="btn btn-outline">Clear</a>
@@ -120,7 +112,7 @@
         </form>
     </div>
 
-    {# Bulk Action Bar #}
+    {# Bulk Action Bar (No change) #}
     <div class="bulk-action-bar" id="bulk-action-bar" style="display: none;">
         <span class="selected-count">
             <strong id="selected-count">0</strong> leads selected
@@ -133,13 +125,12 @@
         </div>
     </div>
 
-
+    {# Table (No change) #}
     <div class="table-scroll-wrapper">
         <table class="leads-table">
             <thead>
                 <tr>
                     <th class="col-checkbox"><input type="checkbox" id="select-all-leads"></th>
-                    
                     <th class="col-lead_id">Lead ID</th>
                     <th class="col-full_name">Full Name</th>
                     <th class="col-first_name">First Name</th>
@@ -153,7 +144,6 @@
                     <th class="col-person_state">Person State</th>
                     <th class="col-person_country">Person Country</th>
                     <th class="col-person_phone">Phone (Person)</th>
-                    
                     <th class="col-company_id">Company ID</th>
                     <th class="col-company_name">Company Name</th>
                     <th class="col-company_website">Company Website</th>
@@ -170,11 +160,8 @@
                     <th class="col-company_phone">Company Phone</th>
                     <th class="col-company_linkedin">LinkedIn (Company)</th>
                     <th class="col-comments">Comments</th>
-                    
                     <th class="col-source">Source</th>
                     <th class="col-created_by">Added By</th>
-                    {# REMOVED: <th class="col-added_on">Added On</th> #}
-                    {# REMOVED: <th class="col-updated_at">Last Updated</th> #}
                 </tr>
             </thead>
             <tbody>
@@ -199,18 +186,15 @@
                     <td class="col-email_status">{{ lead.email_status|default:"-" }}</td>
                     <td class="col-personal_email">{{ lead.personal_email|default:"-" }}</td>
                     <td class="col-li_person">
-                        {# EMOJI FIX #}
                         {% if lead.person_linkedin_url %}<a href="{{ lead.person_linkedin_url }}" target="_blank" title="LinkedIn Profile">👤 Profile</a>{% else %}-{% endif %}
                     </td>
                     <td class="col-person_city">{{ lead.person_city|default:"-" }}</td>
                     <td class="col-person_state">{{ lead.person_state|default:"-" }}</td>
                     <td class="col-person_country">{{ lead.person_country|default:"-" }}</td>
                     <td class="col-person_phone">{{ lead.person_direct_phone|default:"-" }}</td>
-                    
                     <td class="col-company_id">{{ lead.company_id|default:"-" }}</td>
                     <td class="col-company_name"><strong>{{ lead.company_name|default:"-" }}</strong></td>
                     <td class="col-company_website">
-                        {# EMOJI FIX #}
                         {% if lead.company_website %}<a href="{{ lead.company_website }}" target="_blank" title="Company Website">🌐 Website</a>{% else %}-{% endif %}
                     </td>
                     <td class="col-industry">{{ lead.industry|default:"-" }}</td>
@@ -225,22 +209,16 @@
                     <td class="col-company_country">{{ lead.company_country|default:"-" }}</td>
                     <td class="col-company_phone">{{ lead.company_phone|default:"-" }}</td>
                     <td class="col-company_linkedin">
-                        {# EMOJI FIX #}
                         {% if lead.company_linkedin_url %}<a href="{{ lead.company_linkedin_url }}" target="_blank" title="Company LinkedIn">🏢 Company</a>{% else %}-{% endif %}
                     </td>
                     <td class="col-comments">{{ lead.comments|default:"-"|truncatewords:4 }}</td>
-                    
                     <td class="col-source">{{ lead.source|default:"-" }}</td>
                     <td class="col-created_by">{{ lead.created_by.username|default:"-" }}</td>
-                    {# REMOVED: <td class="col-added_on">{{ lead.created_at|date:"M d, Y" }}</td> #}
-                    {# REMOVED: <td class="col-updated_at">{{ lead.updated_at|date:"M d, Y" }}</td> #}
                 </tr>
                 {% empty %}
                 <tr>
-                    {# --- COLSPAN UPDATED TO 32 --- #}
                     <td colspan="32" class="text-center no-leads">
                         <div>
-                            {# EMOJI FIX #}
                             <p>📂 No leads found</p>
                             <a href="{% url 'leads:upload_leads' %}" class="btn btn-primary">Upload Your First Leads</a>
                         </div>
@@ -269,7 +247,7 @@
 </div>
 
 
-{# Quick View Drawer HTML #}
+{# Quick View Drawer HTML (No change) #}
 <div class="drawer-overlay" id="drawer-overlay"></div>
 <div class="lead-drawer" id="lead-drawer">
     <div class="drawer-header">
@@ -286,6 +264,45 @@
 
 {% block extra_js %}
     <script src="{% static 'js/lead_table.js' %}" defer></script>
-    
     <script src="{% static 'js/lead_interactive.js' %}" defer></script>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            
+            // Multi-select dropdowns ke liye
+            $('.select2-multi').select2({
+                placeholder: "Select one or more",
+                allowClear: true,
+                width: '100%'
+            });
+            
+            // Single-select (Employees) dropdown ke liye
+            $('.select2-single').select2({
+                placeholder: "Select an option",
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Page reload hone par purani selected values ko restore karein
+            {% for field in form %}
+                {% if field.name in "job_title,industry,person_country,company_country,employees_dropdown" %}
+                    var selectedValues_{{ field.name }} = [
+                        {% for value in field.value %}
+                            "{{ value|escapejs }}",
+                        {% endfor %}
+                    ];
+                    $('#id_{{ field.name }}').val(selectedValues_{{ field.name }}).trigger('change');
+                {% endif %}
+            {% endfor %}
+            
+            var selectedEmployeeText = "{{ form.employees_text.value|escapejs }}";
+            if (selectedEmployeeText) {
+                $('#id_employees_text').val(selectedEmployeeText);
+            }
+
+        });
+    </script>
 {% endblock %}
