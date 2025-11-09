@@ -9,9 +9,9 @@ django.setup()
 from django.contrib.auth.models import User
 
 # Render ke Environment Variables se admin details lein
-ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'mueezmark')
+ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'zakir_hussain')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'DLG@2026#database')  
-ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'techmark98@gmail.com')
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'zakirdataleadgen@gmail.com')
 
 # Check karein ki user pehle se bana hua toh nahi hai
 if not User.objects.filter(username=ADMIN_USERNAME).exists():
