@@ -1,4 +1,4 @@
-
+# leadgenpro/settings.py (Poora Corrected Code)
 
 from pathlib import Path
 import os
@@ -20,16 +20,13 @@ DEBUG = 'RENDER' not in os.environ
 
 ALLOWED_HOSTS = []
 
-
-CSRF_TRUSTED_ORIGINS = []
-if RENDER_EXTERNAL_HOSTNAME:
-    CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")
-
+# --- YAHAN BADLAV HUA HAI ---
 # Render.com ke hostname ko automatically add karein
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-    
+# --- BADLAV KHATAM ---
+
 
 # Application definition
 
@@ -139,12 +136,20 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i1n/
+# https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
+
+
+# --- YEH NAYA CODE ADD HUA HAI (CSRF FIX) ---
+# CSRF (Cross-Site Request Forgery) protection
+CSRF_TRUSTED_ORIGINS = []
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")
+# --- BADLAV KHATAM ---
 
 
 # Static files (CSS, JavaScript, Images)
