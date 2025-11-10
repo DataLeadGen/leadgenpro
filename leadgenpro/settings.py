@@ -107,15 +107,23 @@ WSGI_APPLICATION = 'leadgenpro.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 # Puraane database config ko is naye config se replace karein
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'dataleadgen',
+#         'USER': 'postgres',
+#         'PASSWORD': 'Datalead@2025',
+#         'HOST': 'localhost',  # or server IP
+#         'PORT': '5432',
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dataleadgen',
-        'USER': 'postgres',
-        'PASSWORD': 'Datalead@2025',
-        'HOST': 'localhost',  # or server IP
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        # Local development ke liye default, agar DATABASE_URL set na ho
+        default='postgresql://leadgenpro_db_user:HUTkBsY0ZwB5WuGJVCgACd0H9l5UNP35@dpg-d483u97diees739nbokg-a/leadgenpro_db',
+        conn_max_age=600
+    )
 }
 
 
