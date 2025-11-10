@@ -108,11 +108,14 @@ WSGI_APPLICATION = 'leadgenpro.wsgi.application'
 
 # Puraane database config ko is naye config se replace karein
 DATABASES = {
-    'default': dj_database_url.config(
-        # Agar DATABASE_URL set nahi hai, toh local SQLite use karein
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dataleadgen',
+        'USER': 'postgres',
+        'PASSWORD': 'Datalead@2025',
+        'HOST': 'localhost',  # or server IP
+        'PORT': '5432',
+    }
 }
 
 

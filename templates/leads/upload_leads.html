@@ -4,84 +4,338 @@
 {% block title %}Upload Leads - LeadgenPro{% endblock %}
 
 {% block extra_css %}
-    {# Add a new CSS file specifically for this page #}
-    <link rel="stylesheet" href="{% static 'css/upload_leads.css' %}">
+<style>
+.upload-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.upload-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 30px;
+}
+
+.upload-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.upload-header h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.upload-header p {
+    color: #666;
+    font-size: 16px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px dashed #ddd;
+    border-radius: 5px;
+    background: #fafafa;
+    transition: border-color 0.3s;
+}
+
+.form-group input[type="file"]:hover {
+    border-color: #007bff;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+.help-text {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.alert-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.supported-columns {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+.supported-columns h4 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.columns-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.column-item {
+    padding: 5px 10px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+.upload-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+}
+
+.btn-outline {
+    background: white;
+    color: #007bff;
+    border: 2px solid #007bff;
+}
+
+.btn-outline:hover {
+    background: #007bff;
+    color: white;
+}
+
+.file-info {
+    background: #e7f3ff;
+    border: 1px solid #b3d9ff;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.file-info h5 {
+    margin: 0 0 10px 0;
+    color: #0066cc;
+}
+
+.requirements {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.requirements h5 {
+    margin: 0 0 10px 0;
+    color: #856404;
+}
+
+.requirements ul {
+    margin: 0;
+    padding-left: 20px;
+}
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="upload-container">
-    <h2 class="upload-title">Upload New Leads</h2>
+    <div class="upload-card">
+        <div class="upload-header">
+            <h2>📤 Upload Leads</h2>
+            <p>Upload CSV or Excel files to add new leads to your database</p>
+        </div>
 
-    <div class="upload-instructions card">
-        <h3>Instructions & Sample</h3>
-        <p>Your CSV or Excel file should ideally include the following columns (first row as header). **Professional Email** is required.</p>
-        <ul class="column-list">
-            <li>Full Name</li>
-            <li>First Name</li>
-            <li>Last Name</li>
-            <li>Job Title</li>
-            <li>**Professional Email (Required)**</li>
-            <li>Email Status</li>
-            <li>Personal Email</li>
-            <li>Person Linkedin Url</li>
-            <li>Person City</li>
-            <li>Person State</li>
-            <li>Person Country</li>
-            <li>Person Direct Phone Number</li>
-            <li>Company Name</li>
-            <li>Company Website</li>
-            <li>Industry</li>
-            <li>Employees</li>
-            <li>Revenue</li>
-            <li>Company Linkedin Url</li>
-            <li>Company Phone Numbers</li>
-            <li>Comments</li>
-            <li>Lead ID</li>
-            <li>Company ID</li>
-            <li>Generic Email</li>
-            <li>Full Address</li>
-            <li>First Address</li>
-            <li>Company City</li>
-            <li>Company State</li>
-            <li>Zip code</li>
-            <li>Company Country</li>
-        </ul>
-        <p>The system will try to match variations like "Email" or "Website".</p>
-        <div class="sample-download">
-             <a href="{% url 'leads:download_sample_csv' %}" class="btn btn-secondary">📥 Download Sample CSV</a>
+        <!-- Messages Display -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %}">
+                    {{ message|safe }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="upload-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_file">Select File *</label>
+                {{ form.file }}
+                <div class="help-text">
+                    {{ form.file.help_text }}
+                </div>
+                
+                <div class="file-info">
+                    <h5>📁 File Requirements:</h5>
+                    <ul>
+                        <li>Max file size: 10MB</li>
+                        <li>Supported formats: CSV, XLS, XLSX</li>
+                        <li>First row should contain column headers</li>
+                        <li>Required column: <strong>Professional Email</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    {{ form.overwrite }}
+                    <label for="id_overwrite">{{ form.overwrite.label }}</label>
+                </div>
+                <div class="help-text">
+                    {{ form.overwrite.help_text }}
+                </div>
+            </div>
+
+            <div class="requirements">
+                <h5>⚠️ Important Notes:</h5>
+                <ul>
+                    <li>Leads are identified by <strong>Professional Email</strong></li>
+                    <li>Duplicate emails will be updated if "Overwrite" is checked</li>
+                    <li>Empty rows will be skipped automatically</li>
+                    <li>Invalid emails will cause row processing to fail</li>
+                </ul>
+            </div>
+
+            <div class="upload-actions">
+                <button type="submit" class="btn btn-primary">🚀 Upload Leads</button>
+                <a href="{% url 'leads:download_sample_csv' %}" class="btn btn-secondary">📥 Download Sample CSV</a>
+                <a href="{% url 'leads:leads_list' %}" class="btn btn-outline">← Back to Leads</a>
+            </div>
+        </form>
+
+        <!-- Supported Columns Section -->
+        <div class="supported-columns">
+            <h4>📋 Supported Column Names</h4>
+            <p>Your file can use any of these column names (case insensitive):</p>
+            
+            <div class="columns-grid">
+                {% for column in supported_columns %}
+                    <div class="column-item">{{ column }}</div>
+                {% endfor %}
+            </div>
+            
+            <p style="margin-top: 15px; font-size: 14px; color: #666;">
+                <strong>Tip:</strong> Multiple column names map to the same field (e.g., "Email", "Work Email", "Professional Email" all work)
+            </p>
         </div>
     </div>
-
-    <form method="post" enctype="multipart/form-data" class="upload-form card">
-        {% csrf_token %}
-        
-        <div class="form-group">
-            <label for="{{ form.file.id_for_label }}">Select CSV or Excel File:</label>
-            {{ form.file }}
-            <small class="form-help-text">{{ form.file.help_text }}</small>
-            {% if form.file.errors %}
-                <ul class="errorlist">
-                    {% for error in form.file.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-        
-        <div class="form-group checkbox-group">
-            {{ form.overwrite }}
-            <label for="{{ form.overwrite.id_for_label }}">{{ form.overwrite.label }}</label>
-            <small class="form-help-text">{{ form.overwrite.help_text }}</small>
-             {% if form.overwrite.errors %}
-                <ul class="errorlist">
-                    {% for error in form.overwrite.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-
-        <button type="submit" class="btn btn-primary form-submit-btn">📤 Upload Leads</button>
-    </form>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('id_file');
+    const form = document.querySelector('.upload-form');
+    
+    // File selection feedback
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const fileInfo = document.querySelector('.file-info') || createFileInfo();
+            fileInfo.innerHTML = `
+                <h5>📁 Selected File:</h5>
+                <p><strong>Name:</strong> ${file.name}</p>
+                <p><strong>Size:</strong> ${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                <p><strong>Type:</strong> ${file.type || file.name.split('.').pop().toUpperCase()}</p>
+            `;
+        }
+    });
+    
+    function createFileInfo() {
+        const div = document.createElement('div');
+        div.className = 'file-info';
+        fileInput.parentNode.appendChild(div);
+        return div;
+    }
+    
+    // Form submission validation
+    form.addEventListener('submit', function(e) {
+        const file = fileInput.files[0];
+        if (!file) {
+            e.preventDefault();
+            alert('Please select a file to upload.');
+            return;
+        }
+        
+        // Show loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '⏳ Uploading...';
+        submitBtn.disabled = true;
+    });
+});
+</script>
 {% endblock %}

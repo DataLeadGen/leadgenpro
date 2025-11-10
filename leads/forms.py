@@ -63,8 +63,6 @@ class LeadFilterForm(forms.Form):
         widget=forms.SelectMultiple(attrs={'class': 'select2-multi', 'placeholder': 'Search countries...'})
     )
     
-    # --- YAHAN BADLAV HUA HAI: Employee filter (Dono) ---
-    
     employees_dropdown = forms.MultipleChoiceField(
         required=False, 
         label='Employees (Select)',
@@ -77,27 +75,25 @@ class LeadFilterForm(forms.Form):
         widget=forms.TextInput(attrs={'placeholder': 'e.g., 15 or 30-70'})
     )
 
-
     def __init__(self, *args, **kwargs):
-        EMPLOYEES_CHOICES = kwargs.pop('EMPLOYEES_CHOICES', [])
-        JOB_TITLE_CHOICES = kwargs.pop('JOB_TITLE_CHOICES', [])
-        INDUSTRY_CHOICES = kwargs.pop('INDUSTRY_CHOICES', [])
-        PERSON_COUNTRY_CHOICES = kwargs.pop('PERSON_COUNTRY_CHOICES', [])
-        COMPANY_COUNTRY_CHOICES = kwargs.pop('COMPANY_COUNTRY_CHOICES', [])
+        # Kwargs se choices ko pop karein
+        choices = {
+            'EMPLOYEES_CHOICES': kwargs.pop('EMPLOYEES_CHOICES', []),
+            'JOB_TITLE_CHOICES': kwargs.pop('JOB_TITLE_CHOICES', []),
+            'INDUSTRY_CHOICES': kwargs.pop('INDUSTRY_CHOICES', []),
+            'PERSON_COUNTRY_CHOICES': kwargs.pop('PERSON_COUNTRY_CHOICES', []),
+            'COMPANY_COUNTRY_CHOICES': kwargs.pop('COMPANY_COUNTRY_CHOICES', [])
+        }
         
         super(LeadFilterForm, self).__init__(*args, **kwargs)
         
-        # Choices assign karein
-        self.fields['employees_dropdown'].choices = EMPLOYEES_CHOICES # Badlaav
-        self.fields['job_title'].choices = JOB_TITLE_CHOICES
-        self.fields['industry'].choices = INDUSTRY_CHOICES
-        self.fields['person_country'].choices = PERSON_COUNTRY_CHOICES
-        self.fields['company_country'].choices = COMPANY_COUNTRY_CHOICES
+        # Fields ko dynamically update karein
+        self.fields['employees_dropdown'].choices = choices['EMPLOYEES_CHOICES']
+        self.fields['job_title'].choices = choices['JOB_TITLE_CHOICES']
+        self.fields['industry'].choices = choices['INDUSTRY_CHOICES']
+        self.fields['person_country'].choices = choices['PERSON_COUNTRY_CHOICES']
+        self.fields['company_country'].choices = choices['COMPANY_COUNTRY_CHOICES']
         
-        # Sabko optional banayein
-        self.fields['job_title'].required = False
-        self.fields['industry'].required = False
-        self.fields['person_country'].required = False
-        self.fields['company_country'].required = False
-        self.fields['employees_dropdown'].required = False # Badlaav
-        self.fields['employees_text'].required = False # Badlaav
+        # Sabhi fields ko optional banayein (DRY principle)
+        for field_name, field in self.fields.items():
+            field.required = False

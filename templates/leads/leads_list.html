@@ -112,7 +112,6 @@
         </form>
     </div>
 
-    {# Bulk Action Bar (No change) #}
     <div class="bulk-action-bar" id="bulk-action-bar" style="display: none;">
         <span class="selected-count">
             <strong id="selected-count">0</strong> leads selected
@@ -125,7 +124,6 @@
         </div>
     </div>
 
-    {# Table (No change) #}
     <div class="table-scroll-wrapper">
         <table class="leads-table">
             <thead>
@@ -220,7 +218,9 @@
                     <td colspan="32" class="text-center no-leads">
                         <div>
                             <p>📂 No leads found</p>
+                            {% if user.is_superuser or user|has_group:"Managers" %}
                             <a href="{% url 'leads:upload_leads' %}" class="btn btn-primary">Upload Your First Leads</a>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>
@@ -232,22 +232,25 @@
     <div class="pagination-container">
         {% if page_obj.has_other_pages %}
         <div class="pagination">
+            
             {% if page_obj.has_previous %}
-                <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">&laquo; First</a>
-                <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">Previous</a>
+                <a href="?page=1{% for key, values in request.GET.lists %}{% if key != 'page' %}{% for value in values %}&{{ key }}={{ value|urlencode }}{% endfor %}{% endif %}{% endfor %}" class="page-link">&laquo; First</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% for key, values in request.GET.lists %}{% if key != 'page' %}{% for value in values %}&{{ key }}={{ value|urlencode }}{% endfor %}{% endif %}{% endfor %}" class="page-link">Previous</a>
             {% endif %}
+            
             <span class="current-page">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">Next</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">Last &raquo;</a>
+                <a href="?page={{ page_obj.next_page_number }}{% for key, values in request.GET.lists %}{% if key != 'page' %}{% for value in values %}&{{ key }}={{ value|urlencode }}{% endfor %}{% endif %}{% endfor %}" class="page-link">Next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% for key, values in request.GET.lists %}{% if key != 'page' %}{% for value in values %}&{{ key }}={{ value|urlencode }}{% endfor %}{% endif %}{% endfor %}" class="page-link">Last &raquo;</a>
             {% endif %}
+            
         </div>
         {% endif %}
     </div>
-</div>
+    </div>
 
 
-{# Quick View Drawer HTML (No change) #}
 <div class="drawer-overlay" id="drawer-overlay"></div>
 <div class="lead-drawer" id="lead-drawer">
     <div class="drawer-header">
@@ -275,13 +278,6 @@
             // Multi-select dropdowns ke liye
             $('.select2-multi').select2({
                 placeholder: "Select one or more",
-                allowClear: true,
-                width: '100%'
-            });
-            
-            // Single-select (Employees) dropdown ke liye
-            $('.select2-single').select2({
-                placeholder: "Select an option",
                 allowClear: true,
                 width: '100%'
             });

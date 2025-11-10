@@ -1,0 +1,34 @@
+{% extends "accounts/base.html" %}
+{% load static %}
+
+{% block title %}Debug Filters - LeadgenPro{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Filter Debug Information</h2>
+    
+    <div class="debug-info">
+        <p><strong>Total Leads in Database:</strong> {{ total_leads }}</p>
+        
+        <h3>Filter Test Results:</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Filter Type</th>
+                    <th>Results Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for test_case in test_cases %}
+                <tr>
+                    <td>{{ test_case.0 }}</td>
+                    <td>{{ test_case.1 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <a href="{% url 'leads:leads_list' %}" class="btn btn-primary">Back to Leads List</a>
+</div>
+{% endblock %}

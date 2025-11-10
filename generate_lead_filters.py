@@ -3,10 +3,13 @@ from leads.models import Lead
 
 def get_unique_choices(field_name, blank_label, use_title_case=True):
     """
-    Generates cleaned, unique, and sorted filter choices from the Lead model.
-    use_title_case: Agar True hai, toh values ko .title() karega.
+    REFACTORED:
+    Database se distinct (unique) values laata hai aur unhein clean karta hai.
     """
-    all_values = Lead.objects.values_list(field_name, flat=True)
+    
+    # SQLite compatible distinct values fetch
+    all_values = Lead.objects.values_list(field_name, flat=True).order_by(field_name)
+    
     unique_cleaned_values = set()
     for value in all_values:
         if value:
@@ -28,18 +31,27 @@ def generate_filters(request):
     Generates cleaned, unique, and sorted filter choices from the Lead model.
     """
     
-    # --- YAHAN BADLAV HUA HAI ---
-    # Job Title ke liye title_case=False, taaki original data se match ho sake
-    JOB_TITLE_CHOICES = get_unique_choices('job_title', 'All Job Titles', use_title_case=False)
-    
-    # Baaki filters ke liye title_case=True (optional, behtar dikhne ke liye)
-    INDUSTRY_CHOICES = get_unique_choices('industry', 'All Industries', use_title_case=True)
-    PERSON_COUNTRY_CHOICES = get_unique_choices('person_country', 'All Person Countries', use_title_case=True)
-    COMPANY_COUNTRY_CHOICES = get_unique_choices('company_country', 'All Company Countries', use_title_case=True)
+    try:
+        # Job Title ke liye title_case=False, taaki original data se match ho sake
+        JOB_TITLE_CHOICES = get_unique_choices('job_title', 'All Job Titles', use_title_case=False)
+        
+        # Baaki filters ke liye title_case=True (optional, behtar dikhne ke liye)
+        INDUSTRY_CHOICES = get_unique_choices('industry', 'All Industries', use_title_case=True)
+        PERSON_COUNTRY_CHOICES = get_unique_choices('person_country', 'All Person Countries', use_title_case=True)
+        COMPANY_COUNTRY_CHOICES = get_unique_choices('company_country', 'All Company Countries', use_title_case=True)
 
-    return {
-        'JOB_TITLE_CHOICES': JOB_TITLE_CHOICES,
-        'INDUSTRY_CHOICES': INDUSTRY_CHOICES,
-        'PERSON_COUNTRY_CHOICES': PERSON_COUNTRY_CHOICES,
-        'COMPANY_COUNTRY_CHOICES': COMPANY_COUNTRY_CHOICES,
-    }
+        return {
+            'JOB_TITLE_CHOICES': JOB_TITLE_CHOICES,
+            'INDUSTRY_CHOICES': INDUSTRY_CHOICES,
+            'PERSON_COUNTRY_CHOICES': PERSON_COUNTRY_CHOICES,
+            'COMPANY_COUNTRY_CHOICES': COMPANY_COUNTRY_CHOICES,
+        }
+    except Exception as e:
+        print(f"Error generating filters: {e}")
+        # Fallback empty choices
+        return {
+            'JOB_TITLE_CHOICES': [('', 'All Job Titles')],
+            'INDUSTRY_CHOICES': [('', 'All Industries')],
+            'PERSON_COUNTRY_CHOICES': [('', 'All Person Countries')],
+            'COMPANY_COUNTRY_CHOICES': [('', 'All Company Countries')],
+        }
