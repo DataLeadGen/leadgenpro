@@ -121,7 +121,7 @@ WSGI_APPLICATION = 'leadgenpro.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         # Local development ke liye default, agar DATABASE_URL set na ho
-        default='postgresql://leadgenpro_db_user:HUTkBsY0ZwB5WuGJVCgACd0H9l5UNP35@dpg-d483u97diees739nbokg-a/leadgenpro_db',
+        default='postgresql://leadgenpro_user:gXhVaS4AZCehc0Jpmhc42dzN7fT5nxrW@dpg-d49jfe7gi27c73ccr84g-a.singapore-postgres.render.com/leadgenpro',
         conn_max_age=600
     )
 }
