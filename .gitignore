@@ -1,5 +1,24 @@
-db.sqlite3
-*.pyc
+# .gitignore (Updated)
+
+# Python compiled files
 __pycache__/
-staticfiles/
+*.pyc
+*.pyo
+*.pyd
+
+# Database (Sabse Zaroori)
+db.sqlite3
+db.sqlite3-journal
+
+# Environment Variables
 .env
+.venv
+env/
+venv/
+
+# Static Files (Generated folder ignore karein)
+staticfiles/
+
+# OS generated files
+.DS_Store
+Thumbs.db

@@ -107,24 +107,24 @@ WSGI_APPLICATION = 'leadgenpro.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 # Puraane database config ko is naye config se replace karein
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'dataleadgen',
-#         'USER': 'postgres',
-#         'PASSWORD': 'Datalead@2025',
-#         'HOST': 'localhost',  # or server IP
-#         'PORT': '5432',
-#     }
-# }
-
 DATABASES = {
-    'default': dj_database_url.config(
-        # Local development ke liye default, agar DATABASE_URL set na ho
-        default='postgresql://leadgenpro_user:gXhVaS4AZCehc0Jpmhc42dzN7fT5nxrW@dpg-d49jfe7gi27c73ccr84g-a.singapore-postgres.render.com/leadgenpro',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dataleadgen',
+        'USER': 'postgres',
+        'PASSWORD': 'Datalead@2025',
+        'HOST': 'localhost',  # or server IP
+        'PORT': '5432',
+    }
 }
+
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         # Local development ke liye default, agar DATABASE_URL set na ho
+#         default='postgresql://leadgenpro_user:gXhVaS4AZCehc0Jpmhc42dzN7fT5nxrW@dpg-d49jfe7gi27c73ccr84g-a.singapore-postgres.render.com/leadgenpro',
+#         conn_max_age=600
+#     )
+# }
 
 
 # Password validation
