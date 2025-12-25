@@ -1,35 +1,26 @@
-# leadgenpro/settings.py (Poora Corrected Code)
+# leadgenpro/settings.py (Final & Fixed)
 
-from pathlib import Path
 import os
-import dj_database_url # Deployment ke liye add kiya gaya
+from pathlib import Path
+import dj_database_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Security
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fallback-key-for-dev')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECRET_KEY ko environment variable se read karein
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-vpttjv0yfd0iys7+(4g_!ajnnwvbnb@0kpc(38yrdle=p5*o!p')
-
-# DEBUG ko production mein automatically False karein
-# 'RENDER' variable Render.com par set hota hai
+# Production mein DEBUG False hoga, Local mein True
 DEBUG = 'RENDER' not in os.environ
 
 ALLOWED_HOSTS = []
 
-# --- YAHAN BADLAV HUA HAI ---
-# Render.com ke hostname ko automatically add karein
+# Render Hostname Setup
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-# --- BADLAV KHATAM ---
-
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,42 +29,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    'leads',    
+    'leads',
     'rest_framework',
-    'django.contrib.sites', 
+    'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 ]
+
 SITE_ID = 1
-
-# Allauth settings
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
-
-# Google Provider ke liye configuration
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-    }
-}
-
-LOGIN_REDIRECT_URL = 'leads:leads_list'
-LOGOUT_REDIRECT_URL = 'home'
-LOGIN_URL = 'accounts:login'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # Static files ke liye add kiya gaya
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # <-- Yeh UI Update ke liye zaroori hai
     'django.contrib.sessions.middleware.SessionMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -88,7 +57,7 @@ ROOT_URLCONF = 'leadgenpro.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS':[BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -102,78 +71,43 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'leadgenpro.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-# Puraane database config ko is naye config se replace karein
+# Database (Auto-Switch between Live and Local)
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dataleadgen',
-        'USER': 'postgres',
-        'PASSWORD': 'Datalead@2025',
-        'HOST': 'localhost',  # or server IP
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        conn_max_age=600
+    )
 }
 
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         # Local development ke liye default, agar DATABASE_URL set na ho
-#         default='postgresql://leadgenpro_user:gXhVaS4AZCehc0Jpmhc42dzN7fT5nxrW@dpg-d49jfe7gi27c73ccr84g-a.singapore-postgres.render.com/leadgenpro',
-#         conn_max_age=600
-#     )
-# }
-
-
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# Static Files (CSS/JS) - Whitenoise Setup
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# --- YEH NAYA CODE ADD HUA HAI (CSRF FIX) ---
-# CSRF (Cross-Site Request Forgery) protection
+# Login Redirects
+LOGIN_REDIRECT_URL = 'leads:leads_list'
+LOGOUT_REDIRECT_URL = 'home'
+LOGIN_URL = 'accounts:login'
+
+# Default Auto Field
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CSRF Fix for Render (Upload Error Fix)
 CSRF_TRUSTED_ORIGINS = []
 if RENDER_EXTERNAL_HOSTNAME:
     CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")
-# --- BADLAV KHATAM ---
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
-# Whitenoise storage ke liye yeh line add karein
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
